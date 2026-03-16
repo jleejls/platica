@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Spanish Sound Bites - Director</title>
+  <title>Spanish Sound Bites - administrator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
@@ -120,11 +120,12 @@
       max-width:100%;
       max-height:100%;
       display:block;
+      pointer-events: none;
     }
 
     #lesson-chip{
       position: fixed;
-       bottom: 17vh;
+      bottom: 17vh;
       right:20vw;
       background: #ffffff;
       border: 1px solid #ddd;
@@ -139,29 +140,44 @@
   </style>
 </head>
 <body>
-
   <div id="lesson-select">
     <h2>Selecciona una lección:</h2>
     <div id="lesson-buttons"></div>
   </div>
 
-  <div id="structure"></div>
+  <div id="structure">
+
+<div style="background:yellow;color:black;font-size:22px;padding:6px;">
+ADMINISTRATOR LESSON STRUCTURE LOADED
+</div>
+
+</div>
 
   <div id="pbar" class="zipbutton">
     <div class="buttonz" data-btn="continue" title="Continuar (siguiente lección)">
-      <img src="./trigger/adelante.png" alt="Adelante">
+      <img src="./toggle/adelante.png" alt="Adelante">
     </div>
     <div class="buttonz" data-btn="exit" title="Salir del programa">
-      <img src="./trigger/exit.png" alt="exit">
+      <img src="./toggle/exit.png" alt="exit">
     </div>
     <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
-      <img src="./trigger/choosel.png" alt="choosel">
+      <img src="./toggle/choosel.png" alt="choosel">
     </div>
-    <div class="buttonz" data-btn="help" title="Ayuda"><img src="./trigger/help.png" alt="Help"></div>
-    <div class="buttonz" data-btn="donate" title="Donar"><img src="./trigger/donate.png" alt="Donate"></div>
-    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)"><img src="./trigger/kill.png" alt="email"></div>
-    <div class="buttonz" data-btn="goback" title="Volver"><img src="./trigger/goback.png" alt="Back"></div>
-    <div class="buttonz" data-btn="translate" title="Traducir"><img src="./trigger/translate.png" alt="Translate"></div>
+    <div class="buttonz" data-btn="help" title="Ayuda">
+      <img src="./toggle/help.png" alt="Help">
+    </div>
+    <div class="buttonz" data-btn="donate" title="Donar">
+      <img src="./toggle/donate.png" alt="Donate">
+    </div>
+    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
+      <img src="./toggle/email.png" alt="email">
+    </div>
+    <div class="buttonz" data-btn="goback" title="Volver">
+      <img src="./toggle/goback.png" alt="Back">
+    </div>
+    <div class="buttonz" data-btn="translate" title="Traducir">
+      <img src="./toggle/translate.png" alt="Translate">
+    </div>
   </div>
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
@@ -174,13 +190,18 @@
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
       const exitUrl         = 'index.html';
-
       let selectedLesson   = 1;
       let selectedPersonId = null;
       let highlightedBox   = null;
 
-      function showLessonChip(show){ lessonChip.style.display = show ? 'block' : 'none'; }
-      function updateLessonChip(){ lessonChip.textContent = `Lección ${selectedLesson}`; }
+      function showLessonChip(show){
+        lessonChip.style.display = show ? 'block' : 'none';
+      }
+
+      function updateLessonChip(){
+        lessonChip.textContent = `Lección ${selectedLesson}`;
+      }
+
       function nudgeChip(){
         try {
           lessonChip.animate(
@@ -210,7 +231,9 @@
         }
 
         function stopAll(){
-          playing.forEach(src => { try { src.stop(); } catch(e) {} });
+          playing.forEach(src => {
+            try { src.stop(); } catch(e) {}
+          });
           playing = [];
         }
 
@@ -261,7 +284,12 @@
         let current = [];
 
         function stopAll(){
-          current.forEach(a => { try { a.pause(); a.currentTime = 0; } catch(e) {} });
+          current.forEach(a => {
+            try {
+              a.pause();
+              a.currentTime = 0;
+            } catch(e) {}
+          });
           current = [];
           AudioJoiner.stopAll();
         }
@@ -289,6 +317,7 @@
               const b = make(objectSrc);
               b.play().catch(() => {});
             }, { once: true });
+
             a.play().catch(() => {
               const b = make(objectSrc);
               b.play().catch(() => {});
@@ -299,7 +328,12 @@
         return { playOne, playChain, stopAll };
       })();
 
-      const VERBS = [null,'Tener','Querer','Decir','Estar','Necesitar','Ir','Saber','Venir','Comer','Tomar','Hablar','Ver','Ser','Poder','Vivir','Haber','Dar','Poner','Hacer','Quedar'];
+      const VERBS = [
+        null,'Tener','Querer','Decir','Estar','Necesitar',
+        'Ir','Saber','Venir','Comer','Tomar','Hablar',
+        'Ver','Ser','Poder','Vivir','Haber','Dar','Poner',
+        'Hacer','Quedar'
+      ];
 
       for(let i = 1; i <= 20; i++){
         const btn = document.createElement('button');
@@ -319,8 +353,8 @@
       }
 
       const frameMap = {
-        1:  { top: '2vh', left: '2vw',  width: '10vw', height: '17vh' },
-        2:  { top: '21vh',  left: '2vw', width: '10vw', height: '17vh' },
+        1:  { top: '2vh',  left: '2vw',  width: '10vw', height: '17vh' },
+        2:  { top: '21vh', left: '2vw',  width: '10vw', height: '17vh' },
         3:  { top: '41vh', left: '2vw',  width: '10vw', height: '17vh' },
         4:  { top: '61vh', left: '2vw',  width: '10vw', height: '17vh' },
         5:  { top: '81vh', left: '2vw',  width: '10vw', height: '17vh' },
@@ -331,17 +365,17 @@
         10: { top: '81vh', left: '88vw', width: '10vw', height: '17vh' },
         11: { top: '61vh', left: '14vw', width: '14vw', height: '27vh' },
         12: { top: '61vh', left: '37vw', width: '14vw', height: '27vh' },
-        13: { top: '61vh', left: '111vw', width: '14vw', height: '27vh' },
+        13: { top: '61vh', left: '74vw', width: '14vw', height: '27vh' },
         14: { top: '61vh', left: '60vw', width: '14vw', height: '27vh' },
         15: { top: '31vh', left: '37vw', width: '14vw', height: '27vh' },
         16: { top: '31vh', left: '60vw', width: '14vw', height: '27vh' },
         17: { top: '31vh', left: '14vw', width: '14vw', height: '27vh' },
-        18: { top: '2vh', left: '14vw', width: '14vw', height: '27vh' },
-        19: { top: '2vh', left: '37vw', width: '14vw', height: '27vh' },
-        20: { top: '2vh', left: '60vw', width: '14vw', height: '27vh' },
-        21: { top: '2vh', left: '74vw', width: '14vw', height: '27vh' },
+        18: { top: '2vh',  left: '14vw', width: '14vw', height: '27vh' },
+        19: { top: '2vh',  left: '37vw', width: '14vw', height: '27vh' },
+        20: { top: '2vh',  left: '60vw', width: '14vw', height: '27vh' },
+        21: { top: '2vh',  left: '74vw', width: '14vw', height: '27vh' },
         22: { top: '31vh', left: '74vw', width: '14vw', height: '27vh' }
-             };
+      };
 
       function clearSelection(){
         selectedPersonId = null;
@@ -349,10 +383,19 @@
         highlightedBox = null;
       }
 
+      function selectPerson(boxEl, personId){
+        selectedPersonId = personId;
+        if (highlightedBox) highlightedBox.style.outline = '';
+        boxEl.style.outline = '5px solid red';
+        highlightedBox = boxEl;
+      }
+
       function loadStructure(){
         structureArea.innerHTML = '';
         clearSelection();
- for(let i = 1; i <= 22; i++){
+
+        for(let i = 1; i <= 22; i++){
+          if (i === 13) continue;
           const d = document.createElement('div');
           d.className = 'box';
           d.id = `box${i}`;
@@ -362,47 +405,49 @@
           d.style.left = pos.left;
           d.style.width = pos.width;
           d.style.height = pos.height;
-
+console.log("Selected lesson =", selectedLesson);
           const img = document.createElement('img');
-          img.src = `./group/lesson${selectedLesson}/image/p${i}.png`;
+         const url = `./family/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+console.log("IMAGE LOAD:", { selectedLesson, i, url });
+img.src = url;
           img.alt = `p${i}`;
           d.appendChild(img);
 
           d.addEventListener('click', () => {
             if (i === 21 || i === 22) {
-  clearSelection();
-  audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-  return;
-}
+              clearSelection();
+              audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+              return;
+            }
+
             if (i >= 11 && i <= 20) {
-              selectedPersonId = i;
-              if (highlightedBox) highlightedBox.style.outline = '';
-              d.style.outline = '5px solid red';
-              highlightedBox = d;
-              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+              selectPerson(d, i);
+              audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
             if (i >= 1 && i <= 10) {
               if (selectedPersonId) {
                 audioBus.playChain(
-                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
-                  `./group/lesson${selectedLesson}/sound/${i}.m4a`
+                  `./family/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                  `./family/lesson${selectedLesson}/sound/${i}.m4a`
                 );
               } else {
-                audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+                audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
               }
-              clearSelection();
+              return;
             }
           });
 
           structureArea.appendChild(d);
         }
 
-        const urls = [];
-        for(let i = 1; i <= 20; i++){
-          urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-        }
+           const urls = [];
+for (let i = 1; i <= 20; i++) {
+  if (i === 14) continue;
+  urls.push(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+}
+
         setTimeout(() => AudioJoiner.preload(urls), 200);
       }
 
@@ -412,6 +457,7 @@
         lessonSelect.style.display = 'block';
         pbar.style.display = 'none';
         showLessonChip(false);
+        clearSelection();
       }
 
       function exitProgram(){
@@ -424,12 +470,12 @@
       }
 
       document.addEventListener('click', ev => {
-        const img = ev.target.closest && ev.target.closest('.buttonz img');
-        if (!img) return;
+        const btn = ev.target.closest && ev.target.closest('.buttonz');
+        if (!btn) return;
 
-        const src = (img.getAttribute('src') || '').toLowerCase();
+        const action = btn.dataset.btn;
 
-        if (src.includes('adelante')) {
+        if (action === 'continue') {
           if (structureArea.style.display === 'block') {
             if (selectedLesson < 20) {
               selectedLesson++;
@@ -444,26 +490,35 @@
           return;
         }
 
-        if (src.includes('exit')) { exitProgram(); return; }
-        if (src.includes('choosel')) { showSelection(); return; }
+        if (action === 'exit') {
+          exitProgram();
+          return;
+        }
 
-        if (src.includes('goback')) {
+        if (action === 'choosel') {
+          showSelection();
+          return;
+        }
+
+        if (action === 'goback') {
           try {
-            window.open('./lagente.html', '_blank', 'noopener,noreferrer');
+            window.open('./identity.html', '_blank', 'noopener,noreferrer');
           } catch(e) {
-            location.href = './lagente.html';
+            location.href = './identity.html';
           }
           return;
         }
 
-        if (src.includes('email') || src.includes('kill.png')) {
+        if (action === 'email') {
           const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
           let win = null;
+
           try {
             win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
           } catch(e) {
             win = null;
           }
+
           if (!win) {
             const a = document.createElement('a');
             a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
@@ -476,11 +531,18 @@
           return;
         }
 
-        if (src.includes('translate')) {
-          const m4a = `./group/translation/lesson${selectedLesson}.m4a`;
-          audioBus.stopAll();
-          const a = new Audio(m4a);
-          a.play().catch(() => {});
+        if (action === 'translate') {
+          audioBus.playOne(`./family/translation/lesson${selectedLesson}.m4a`);
+          return;
+        }
+
+        if (action === 'help') {
+          alert('Botón de ayuda todavía no programado.');
+          return;
+        }
+
+        if (action === 'donate') {
+          alert('Botón de donación todavía no programado.');
           return;
         }
       }, false);
