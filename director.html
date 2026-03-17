@@ -407,7 +407,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           d.style.height = pos.height;
 console.log("Selected lesson =", selectedLesson);
           const img = document.createElement('img');
-         const url = `./family/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
 console.log("IMAGE LOAD:", { selectedLesson, i, url });
 img.src = url;
           img.alt = `p${i}`;
@@ -416,24 +416,24 @@ img.src = url;
           d.addEventListener('click', () => {
             if (i === 21 || i === 22) {
               clearSelection();
-              audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
             if (i >= 11 && i <= 20) {
               selectPerson(d, i);
-              audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
             if (i >= 1 && i <= 10) {
               if (selectedPersonId) {
                 audioBus.playChain(
-                  `./family/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
-                  `./family/lesson${selectedLesson}/sound/${i}.m4a`
+                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                  `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
               } else {
-                audioBus.playOne(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+                audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
               return;
             }
@@ -445,7 +445,7 @@ img.src = url;
            const urls = [];
 for (let i = 1; i <= 20; i++) {
   if (i === 14) continue;
-  urls.push(`./family/lesson${selectedLesson}/sound/${i}.m4a`);
+  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
 }
 
         setTimeout(() => AudioJoiner.preload(urls), 200);
@@ -532,7 +532,7 @@ for (let i = 1; i <= 20; i++) {
         }
 
         if (action === 'translate') {
-          audioBus.playOne(`./family/translation/lesson${selectedLesson}.m4a`);
+          audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
           return;
         }
 
