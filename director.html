@@ -432,7 +432,9 @@ img.src = url;
                   `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
                   `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
+                clearSelection();
                 selectedPersonId = null; 
+                
               } else {
                 audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
