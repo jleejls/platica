@@ -17,7 +17,7 @@
 
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      font-group: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       background:#f0f8ff;
       color:#111;
       line-height:1.35;
@@ -172,7 +172,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
       <img src="./trigger/email.png" alt="email">
     </div>
-    <div class="buttonz" data-btn="goback" title="Volver">
+    <div class="buttonz" data-btn="goback" title="lagente">
       <img src="./trigger/goback.png" alt="Back">
     </div>
     <div class="buttonz" data-btn="translate" title="Traducir">
@@ -432,9 +432,8 @@ img.src = url;
                   `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
                   `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
-                clearSelection();
+                 clearSelection();
                 selectedPersonId = null; 
-                
               } else {
                 audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
@@ -502,11 +501,12 @@ for (let i = 1; i <= 20; i++) {
           showSelection();
           return;
         }
- if (action === 'goback') {
+
+        if (action === 'goback') {
           try {
             window.open('./lagente.html', '_blank', 'noopener,noreferrer');
           } catch(e) {
-            location.href = './la gente.html';
+            location.href = './lagente.html';
           }
           return;
         }

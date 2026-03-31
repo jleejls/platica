@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-mar 24
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!-- Correct placement of the meta tag -->
-  <title>Welcome to Your Spanish class</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Your Spanish Journey</title>
+
   <style>
-    /* Body styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -15,7 +14,6 @@ mar 24
       color: #333;
     }
 
-    /* Header styles */
     header {
       text-align: center;
       padding-top: 1rem;
@@ -24,8 +22,8 @@ mar 24
     /* Main center container */
     #container {
       position: absolute;
-      left: 25vw;
-      top: 0px;
+      left: 42vw;
+      top: 70px;
       background-color: tan;
       border-radius: 10px;
       max-width: 220px;
@@ -34,7 +32,7 @@ mar 24
     }
 
     .section {
-      margin: .7 rem 0;
+      margin: 1rem 0;
       padding: 0.5rem;
       background: #fff;
       border-radius: 8px;
@@ -59,8 +57,8 @@ mar 24
     /* Left side credits container */
     #credits {
       position: absolute;
-      top: 23px;
-      left: 400px;
+      top: 100px;
+      left: 40px;
       background-color: #fffbea;
       color: #333;
       border-radius: 10px;
@@ -122,48 +120,47 @@ mar 24
 
 <body>
 
+  <header>
+    <h2>Bienvenidos a Spanish Platica</h2>
+  </header>
+
   <!-- LEFT SIDE CREDITS CONTAINER -->
   <div id="credits">
     <h3>Credits</h3>
     <ul>
       <li><strong>Project Creator:</strong> Jimmy Self</li>
-      <li><strong>Project Assistant:</strong> AJ Cornell</li>
+      <li><strong>Project Assistant:</strong>AJ Cornell</li>
       <li><strong>Art & Design:</strong> José García</li>
       <li><strong>Visuals:</strong> María Flores</li>
-      <li><strong>Voice:</strong> Jimmy Self</li>
+      <li><strong>Audio Mixing:</strong> Pedro Castro</li>
       <li><strong>Production Advisor:</strong> Prof. Eduardo De León</li>
-      <li><strong>Actors:</strong></li>
-      <li><strong></strong>-   Jose Garcia</li>
-      <li><strong></strong>-   Susana Mejia</li>
-      <li><strong></strong>-   Juan Flores</li>
-      <li><strong></strong>-   Maria Flores</li>
-      <li><strong></strong>-   Lucia Garcia</li>
-      <li><strong></strong>-   Roberto Gomez</li>
-      <li><strong></strong>-   Noel Romero</li>
-      <li><strong></strong>-   AJ Cornell</li>
-      <li><strong></strong>-   Seibert Sagand</li>
     </ul>
+  </div>
 
   <!-- RIGHT SIDE NOTICE CONTAINER -->
- 
+  <div id="notice">
+    <h3>Under Construction</h3>
+    <p>This site is under construction. Expect errors and don’t expect the program to be polished yet.</p>
+    <p>The audio will soon be updated to a more natural Hispanic voice.</p>
+  </div>
+
   <!-- MAIN CENTER OPTIONS -->
   <div id="container">
     <div class="section">
       <h2>Returning Student?</h2>
-      <button onclick="location.href='./director.html'">Start</button>
+      <button onclick="location.href='director.html'">Start</button>
     </div>
 
     <div class="section">
       <h2>First Time Here?</h2>
-      <button onclick="location.href='./welcome.html'">Start from the Beginning</button>
+      <button onclick="location.href='welcome.html'">Start from the Beginning</button>
     </div>
 
     <div class="section">
       <h2>Come Back Soon</h2>
-      <button onclick="window.location.replace('about:blank')">Exit</button>
+      <button onclick="window.location.href='about:blank'">Exit</button>
     </div>
   </div>
 
 </body>
-
 </html>
