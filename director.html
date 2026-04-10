@@ -203,6 +203,30 @@
     .contact-close:hover{ background: #eef7ff; }
     .contact-close:focus{ outline: var(--focus); }
 
+    
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
   </style>
 </head>
 <body>
@@ -225,20 +249,18 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     </div>
     <div class="buttonz" data-btn="exit" title="Salir del programa">
       <img src="./trigger/exit.png" alt="exit">
-    </div>
-
-    
+    </div> 
     <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
       <img src="./trigger/choosel.png" alt="choosel">
     </div>
     <div class="buttonz" data-btn="help" title="Ayuda">
-      <img src="./trigger/help.png" alt="Help">
+      <img src="./trigger/help.png" alt="help">
     </div>
     <div class="buttonz" data-btn="donate" title="Donar">
       <img src="./trigger/donate.png" alt="Donate">
     </div>
     <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
-      <img src="./trigger/email.png" alt="email">
+      <img src="./trigger/help.png" alt="email">
     </div>
     <div class="buttonz" data-btn="goback" title="lagente">
       <img src="./trigger/goback.png" alt="Back">
@@ -262,7 +284,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       <button id="contact-close" class="contact-close" type="button">Close</button>
     </div>
   </div>
-
 
   <script>
    
@@ -622,27 +643,10 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         }
 
         if (action === 'email') {
-          const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
-          let win = null;
-
-          try {
-            win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
-          } catch(e) {
-            win = null;
-          }
-
-          if (!win) {
-            const a = document.createElement('a');
-            a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
-            a.target = '_blank';
-            a.rel = 'noopener';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }
-          return;
-        }
-
+         showModal("This particular button is not programmed yet.");
+        } 
+       
+      
         if (action === 'translate') {
           audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
           return;
@@ -657,6 +661,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           alert('Botón de donación todavía no programado.');
           return;
         }
+
       }, false);
 
 
@@ -676,6 +681,27 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       window.addEventListener('pagehide', () => audioBus.stopAll());
       window.addEventListener('beforeunload', () => audioBus.stopAll());
     });
+
+    function showModal(message) {
+    const modal = document.getElementById('modal');
+    const text = document.getElementById('modal-text');
+
+    text.textContent = message;
+    modal.classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.add('hidden');
+}
   </script>
+  ...your page content...
+
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <p id="modal-text"></p>
+    <button onclick="closeModal()">OK</button>
+  </div>
+</div>
+
 </body>
 </html>
