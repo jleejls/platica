@@ -137,6 +137,72 @@
       user-select: none;
       z-index: 50;
     }
+
+
+    .contact-modal{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.45);
+      z-index: 120;
+      padding: 20px;
+    }
+
+    .contact-modal.is-open{
+      display: flex;
+    }
+
+    .contact-card{
+      width: min(92vw, 560px);
+      background: #fffef8;
+      border: 2px solid #c9b36a;
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,.22);
+      padding: 18px 18px 14px;
+      text-align: left;
+      color: #111;
+    }
+
+    .contact-card h3{
+      margin: 0 0 10px;
+      font-size: clamp(1.05rem, 2.7vw, 1.35rem);
+    }
+
+    .contact-card p{
+      margin: 0 0 10px;
+      font-size: clamp(.98rem, 2.2vw, 1.05rem);
+    }
+
+    .contact-email{
+      display: inline-block;
+      margin: 2px 0 12px;
+      padding: 8px 10px;
+      background: #f3f7ff;
+      border: 1px solid #b7c8ea;
+      border-radius: 10px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .contact-close{
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 110px;
+      padding: 10px 16px;
+      border: 1px solid #888;
+      border-radius: 12px;
+      background: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .contact-close:hover{ background: #eef7ff; }
+    .contact-close:focus{ outline: var(--focus); }
+
   </style>
 </head>
 <body>
@@ -160,6 +226,8 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     <div class="buttonz" data-btn="exit" title="Salir del programa">
       <img src="./trigger/exit.png" alt="exit">
     </div>
+
+    
     <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
       <img src="./trigger/choosel.png" alt="choosel">
     </div>
@@ -182,17 +250,38 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
 
+
+
+  <div id="contact-modal" class="contact-modal" aria-hidden="true">
+    <div class="contact-card" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+      <h3 id="contact-title">Need help with Plática?</h3>
+      <p>You can contact Jimmy with questions about Plática at this email address:</p>
+      <div class="contact-email">spanishsoundbites@gmail.com</div>
+      <p>Please step out of the program and use your regular email or text method to get in touch.</p>
+      <p>If you encounter serious mistakes or have other suggestions, Jimmy would be glad to hear from you.</p>
+      <button id="contact-close" class="contact-close" type="button">Close</button>
+    </div>
+  </div>
+
+
   <script>
+   
     document.addEventListener('DOMContentLoaded', () => {
       const lessonSelect    = document.getElementById('lesson-select');
       const structureArea   = document.getElementById('structure');
       const lessonButtonsEl = document.getElementById('lesson-buttons');
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
+      const contactModal    = document.getElementById('contact-modal');
+      const contactCloseBtn = document.getElementById('contact-close');
       const exitUrl         = 'blank.html';
-      let selectedLesson   = 1;
-      let selectedPersonId = null;
-      let highlightedBox   = null;
+     let selectedLesson   = 1;
+     let selectedPersonId = null;
+     let highlightedBox   = null;
+
+      function objectAud(num) {
+      return `./group/lesson${selectedLesson}/sound/${pad2(num)}.m4a`;
+      }
 
       function showLessonChip(show){
         lessonChip.style.display = show ? 'block' : 'none';
@@ -377,6 +466,19 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         22: { top: '31vh', left: '74vw', width: '14vw', height: '27vh' }
       };
 
+
+
+      function showContactModal(){
+        contactModal.classList.add('is-open');
+        contactModal.setAttribute('aria-hidden', 'false');
+        try { contactCloseBtn.focus(); } catch(e) {}
+      }
+
+      function hideContactModal(){
+        contactModal.classList.remove('is-open');
+        contactModal.setAttribute('aria-hidden', 'true');
+      }
+
       function clearSelection(){
         selectedPersonId = null;
         if (highlightedBox) highlightedBox.style.outline = '';
@@ -390,68 +492,76 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         highlightedBox = boxEl;
       }
 
-      function loadStructure(){
-        structureArea.innerHTML = '';
+     function loadStructure(){
+  structureArea.innerHTML = '';
+  clearSelection();
+
+  const urls = [];
+
+  for(let i = 1; i <= 22; i++){
+    if (i === 13) continue;
+
+    const d = document.createElement('div');
+    d.className = 'box';
+    d.id = `box${i}`;
+
+    const pos = frameMap[i];
+    d.style.top = pos.top;
+    d.style.left = pos.left;
+    d.style.width = pos.width;
+    d.style.height = pos.height;
+
+    console.log("Selected lesson =", selectedLesson);
+
+    const img = document.createElement('img');
+    const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+    console.log("IMAGE LOAD:", { selectedLesson, i, url });
+    img.src = url;
+    img.alt = `p${i}`;
+    d.appendChild(img);
+
+    d.addEventListener('click', () => {
+      if (i === 21 || i === 22) {
         clearSelection();
-
-        for(let i = 1; i <= 22; i++){
-          if (i === 13) continue;
-          const d = document.createElement('div');
-          d.className = 'box';
-          d.id = `box${i}`;
-
-          const pos = frameMap[i];
-          d.style.top = pos.top;
-          d.style.left = pos.left;
-          d.style.width = pos.width;
-          d.style.height = pos.height;
-console.log("Selected lesson =", selectedLesson);
-          const img = document.createElement('img');
-         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
-console.log("IMAGE LOAD:", { selectedLesson, i, url });
-img.src = url;
-          img.alt = `p${i}`;
-          d.appendChild(img);
-
-          d.addEventListener('click', () => {
-            if (i === 21 || i === 22) {
-              clearSelection();
-              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-              return;
-            }
-
-            if (i >= 11 && i <= 20) {
-              selectPerson(d, i);
-              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-              return;
-            }
-
-            if (i >= 1 && i <= 10) {
-              if (selectedPersonId) {
-                audioBus.playChain(
-                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
-                  `./group/lesson${selectedLesson}/sound/${i}.m4a`
-                );
-                 clearSelection();
-                selectedPersonId = null; 
-              } else {
-                audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-              }
-              return;
-            }
-          });
-
-          structureArea.appendChild(d);
-        }
-
-           const urls = [];
-for (let i = 1; i <= 20; i++) {
-  if (i === 14) continue;
-  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-}
-
-        setTimeout(() => AudioJoiner.preload(urls), 200);
+        audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+        return;
       }
+
+      if (i >= 11 && i <= 20) {
+        selectPerson(d, i);
+        audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+        return;
+      }
+
+      if (i >= 1 && i <= 10) {
+        if (selectedPersonId) {
+          audioBus.playChain(
+            `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+            `./group/lesson${selectedLesson}/sound/${String(i).padStart(2, '0')}.m4a`
+          );
+          clearSelection();
+          selectedPersonId = null;
+        } else {
+          audioBus.playOne(`./group/lesson${selectedLesson}/sound/${String(i).padStart(2, '0')}.m4a`);
+        }
+        return;
+      }
+    });
+
+    structureArea.appendChild(d);
+  }
+
+  for (let i = 1; i <= 20; i++) {
+    if (i === 14) continue;
+    if (i >= 1 && i <= 10) {
+      urls.push(`./group/lesson${selectedLesson}/sound/${String(i).padStart(2, '0')}.m4a`);
+    } else {
+      urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+    }
+  }
+
+  setTimeout(() => AudioJoiner.preload(urls), 200);
+}
 
       function showSelection(){
         audioBus.stopAll();
@@ -539,7 +649,7 @@ for (let i = 1; i <= 20; i++) {
         }
 
         if (action === 'help') {
-          alert('Botón de ayuda todavía no programado.');
+          showContactModal();
           return;
         }
 
@@ -548,6 +658,20 @@ for (let i = 1; i <= 20; i++) {
           return;
         }
       }, false);
+
+
+
+      contactCloseBtn.addEventListener('click', hideContactModal);
+
+      contactModal.addEventListener('click', ev => {
+        if (ev.target === contactModal) hideContactModal();
+      });
+
+      document.addEventListener('keydown', ev => {
+        if (ev.key === 'Escape' && contactModal.classList.contains('is-open')) {
+          hideContactModal();
+        }
+      });
 
       window.addEventListener('pagehide', () => audioBus.stopAll());
       window.addEventListener('beforeunload', () => audioBus.stopAll());
