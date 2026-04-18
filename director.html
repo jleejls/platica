@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spanish Sound Bites - administrator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --gap: 4px;
+      --slot-radius: 14px;
+      --slot-border: 1px solid #ccc;
+      --slot-hover: turquoise;
+      --focus: 2px solid #1976d2;
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:#f0f8ff;
+      color:#111;
+      line-height:1.35;
+    }
+
+    #lesson-select{
+      padding: 20px 16px 28px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    #lesson-select h2{
+      margin: 8px 0 10px;
+      font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    }
+
+    #lesson-buttons{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      align-items: stretch;
+    }
+
+    .nav-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 12px;
+      border: var(--slot-border);
+      border-radius: var(--slot-radius);
+      background: white;
+      cursor:pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align:center;
+      transition: background .15s ease;
+    }
+
+    .nav-button:hover{ background: var(--slot-hover); }
+    .nav-button:focus{ outline: var(--focus); }
+
+    #structure{
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: none;
+      background-color: #f0f8ff;
+      overflow: hidden;
+    }
+
+    .box{
+      position: absolute;
+      border-radius: 0;
+      background-color: transparent;
+      text-align:center;
+      font-weight:bold;
+      color:black;
+    }
+
+    .box img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+
+    .zipbutton{
+      display:none;
+      flex-direction:row;
+      align-items:center;
+      justify-content:center;
+      gap:2vh;
+      position:fixed;
+      bottom:2vh;
+      left:50%;
+      transform:translateX(-50%);
+      background-color:#f0f0f0;
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      z-index: 50;
+    }
+
+    .buttonz{
+      border:2px solid #4CAF50;
+      border-radius:1vw;
+      height:5vh;
+      width:5vw;
+      min-width:56px;
+      min-height:36px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      background-color:#d05000;
+      cursor: pointer;
+    }
+
+    .buttonz img{
+      max-width:100%;
+      max-height:100%;
+      display:block;
+      pointer-events: none;
+    }
+
+    #lesson-chip{
+      position: fixed;
+      bottom: 17vh;
+      right:20vw;
+      background: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-weight: 700;
+      display: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,.08);
+      user-select: none;
+      z-index: 50;
+    }
+  </style>
+</head>
+<body>
+  <div id="lesson-select">
+    <h2>Selecciona una lección:</h2>
+    <div id="lesson-buttons"></div>
+  </div>
+
+  <div id="structure">
+
+<div style="background:yellow;color:black;font-size:22px;padding:6px;">
+ADMINISTRATOR LESSON STRUCTURE LOADED
+</div>
+
+</div>
+
+  <div id="pbar" class="zipbutton">
+    <div class="buttonz" data-btn="continue" title="Continuar (siguiente lección)">
+      <img src="./trigger/adelante.png" alt="Adelante">
+    </div>
+    <div class="buttonz" data-btn="exit" title="Salir del programa">
+      <img src="./trigger/exit.png" alt="exit">
+    </div>
+    <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
+      <img src="./trigger/choosel.png" alt="choosel">
+    </div>
+    <div class="buttonz" data-btn="help" title="Ayuda">
+      <img src="./trigger/help.png" alt="Help">
+    </div>
+    <div class="buttonz" data-btn="donate" title="Donar">
+      <img src="./trigger/donate.png" alt="Donate">
+    </div>
+    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
+      <img src="./trigger/email.png" alt="email">
+    </div>
+    <div class="buttonz" data-btn="goback" title="Volver">
+      <img src="./trigger/goback.png" alt="Back">
+    </div>
+    <div class="buttonz" data-btn="translate" title="Traducir">
+      <img src="./trigger/translate.png" alt="Translate">
+    </div>
+  </div>
+
+  <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const lessonSelect    = document.getElementById('lesson-select');
+      const structureArea   = document.getElementById('structure');
+      const lessonButtonsEl = document.getElementById('lesson-buttons');
+      const pbar            = document.getElementById('pbar');
+      const lessonChip      = document.getElementById('lesson-chip');
+      const exitUrl         = 'about:blank';
+      let selectedLesson   = 1;
+      let selectedPersonId = null;
+      let highlightedBox   = null;
+
+      function showLessonChip(show){
+        lessonChip.style.display = show ? 'block' : 'none';
+      }
+
+      function updateLessonChip(){
+        lessonChip.textContent = `Lección ${selectedLesson}`;
+      }
+
+      function nudgeChip(){
+        try {
+          lessonChip.animate(
+            [{transform:'scale(1)'},{transform:'scale(1.06)'},{transform:'scale(1)'}],
+            {duration:320,easing:'ease-out'}
+          );
+        } catch(e) {}
+      }
+
+      const AudioJoiner = (() => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const cache = new Map();
+        let playing = [];
+
+        async function resume(){
+          if (ctx.state !== 'running') {
+            try { await ctx.resume(); } catch(e) {}
+          }
+        }
+
+        async function load(url){
+          if (cache.has(url)) return cache.get(url);
+          const ab = await fetch(url).then(r => r.arrayBuffer());
+          const buf = await ctx.decodeAudioData(ab);
+          cache.set(url, buf);
+          return buf;
+        }
+
+        function stopAll(){
+          playing.forEach(src => {
+            try { src.stop(); } catch(e) {}
+          });
+          playing = [];
+        }
+
+        async function playJoined(personUrl, objectUrl, overlapMs = 80){
+          await resume();
+          stopAll();
+
+          const [pBuf, oBuf] = await Promise.all([load(personUrl), load(objectUrl)]);
+
+          const p = ctx.createBufferSource();
+          const o = ctx.createBufferSource();
+          const pg = ctx.createGain();
+          const og = ctx.createGain();
+
+          p.buffer = pBuf;
+          o.buffer = oBuf;
+
+          p.connect(pg).connect(ctx.destination);
+          o.connect(og).connect(ctx.destination);
+
+          const now = ctx.currentTime;
+          const overlap = overlapMs / 1000;
+          const seam = now + pBuf.duration;
+
+          pg.gain.setValueAtTime(1, now);
+          pg.gain.linearRampToValueAtTime(1, seam);
+
+          og.gain.setValueAtTime(0, seam - overlap);
+          og.gain.linearRampToValueAtTime(1, seam);
+
+          playing.push(p, o);
+          p.start(now);
+          o.start(seam - overlap);
+        }
+
+        async function preload(urls){
+          await Promise.all(urls.map(u => load(u).catch(() => null)));
+        }
+
+        return { resume, stopAll, playJoined, preload };
+      })();
+
+      document.body.addEventListener('click', () => {
+        AudioJoiner.resume();
+      }, { once: true });
+
+      const audioBus = (() => {
+        let current = [];
+
+        function stopAll(){
+          current.forEach(a => {
+            try {
+              a.pause();
+              a.currentTime = 0;
+            } catch(e) {}
+          });
+          current = [];
+          AudioJoiner.stopAll();
+        }
+
+        function make(src){
+          const a = new Audio(src);
+          a.addEventListener('ended', () => {
+            current = current.filter(x => x !== a);
+          });
+          current.push(a);
+          return a;
+        }
+
+        function playOne(src){
+          stopAll();
+          const a = make(src);
+          a.play().catch(() => {});
+        }
+
+        function playChain(personSrc, objectSrc){
+          stopAll();
+          AudioJoiner.playJoined(personSrc, objectSrc, 80).catch(() => {
+            const a = make(personSrc);
+            a.addEventListener('ended', () => {
+              const b = make(objectSrc);
+              b.play().catch(() => {});
+            }, { once: true });
+
+            a.play().catch(() => {
+              const b = make(objectSrc);
+              b.play().catch(() => {});
+            });
+          });
+        }
+
+        return { playOne, playChain, stopAll };
+      })();
+
+      const VERBS = [
+        null,'Tener','Querer','Decir','Estar','Necesitar',
+        'Ir','Saber','Venir','Comer','Tomar','Hablar',
+        'Ver','Ser','Poder','Vivir','Haber','Dar','Poner',
+        'Hacer','Quedar'
+      ];
+
+      for(let i = 1; i <= 20; i++){
+        const btn = document.createElement('button');
+        btn.textContent = `Lección ${i} — ${VERBS[i]}`;
+        btn.className = 'nav-button';
+        btn.addEventListener('click', () => {
+          selectedLesson = i;
+          lessonSelect.style.display = 'none';
+          structureArea.style.display = 'block';
+          pbar.style.display = 'flex';
+          audioBus.stopAll();
+          loadStructure();
+          updateLessonChip();
+          showLessonChip(true);
+        });
+        lessonButtonsEl.appendChild(btn);
+      }
+
+      const frameMap = {
+        1:  { top: '2vh',  left: '2vw',  width: '10vw', height: '17vh' },
+        2:  { top: '21vh', left: '2vw',  width: '10vw', height: '17vh' },
+        3:  { top: '41vh', left: '2vw',  width: '10vw', height: '17vh' },
+        4:  { top: '61vh', left: '2vw',  width: '10vw', height: '17vh' },
+        5:  { top: '81vh', left: '2vw',  width: '10vw', height: '17vh' },
+        6:  { top: '2vh',  left: '88vw', width: '10vw', height: '17vh' },
+        7:  { top: '21vh', left: '88vw', width: '10vw', height: '17vh' },
+        8:  { top: '41vh', left: '88vw', width: '10vw', height: '17vh' },
+        9:  { top: '61vh', left: '88vw', width: '10vw', height: '17vh' },
+        10: { top: '81vh', left: '88vw', width: '10vw', height: '17vh' },
+        11: { top: '61vh', left: '14vw', width: '14vw', height: '27vh' },
+        12: { top: '61vh', left: '37vw', width: '14vw', height: '27vh' },
+        13: { top: '61vh', left: '74vw', width: '14vw', height: '27vh' },
+        14: { top: '61vh', left: '60vw', width: '14vw', height: '27vh' },
+        15: { top: '31vh', left: '37vw', width: '14vw', height: '27vh' },
+        16: { top: '31vh', left: '60vw', width: '14vw', height: '27vh' },
+        17: { top: '31vh', left: '14vw', width: '14vw', height: '27vh' },
+        18: { top: '2vh',  left: '14vw', width: '14vw', height: '27vh' },
+        19: { top: '2vh',  left: '37vw', width: '14vw', height: '27vh' },
+        20: { top: '2vh',  left: '60vw', width: '14vw', height: '27vh' },
+        21: { top: '2vh',  left: '74vw', width: '14vw', height: '27vh' },
+        22: { top: '31vh', left: '74vw', width: '14vw', height: '27vh' }
+      };
+
+      function clearSelection(){
+        selectedPersonId = null;
+        if (highlightedBox) highlightedBox.style.outline = '';
+        highlightedBox = null;
+      }
+
+      function selectPerson(boxEl, personId){
+        selectedPersonId = personId;
+        if (highlightedBox) highlightedBox.style.outline = '';
+        boxEl.style.outline = '5px solid red';
+        highlightedBox = boxEl;
+      }
+
+      function loadStructure(){
+        structureArea.innerHTML = '';
+        clearSelection();
+
+        for(let i = 1; i <= 22; i++){
+          if (i === 13) continue;
+          const d = document.createElement('div');
+          d.className = 'box';
+          d.id = `box${i}`;
+
+          const pos = frameMap[i];
+          d.style.top = pos.top;
+          d.style.left = pos.left;
+          d.style.width = pos.width;
+          d.style.height = pos.height;
+console.log("Selected lesson =", selectedLesson);
+          const img = document.createElement('img');
+         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+console.log("IMAGE LOAD:", { selectedLesson, i, url });
+img.src = url;
+          img.alt = `p${i}`;
+          d.appendChild(img);
+
+          d.addEventListener('click', () => {
+            if (i === 21 || i === 22) {
+              clearSelection();
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+              return;
+            }
+
+            if (i >= 11 && i <= 20) {
+              selectPerson(d, i);
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+              return;
+            }
+
+            if (i >= 1 && i <= 10) {
+              if (selectedPersonId) {
+                audioBus.playChain(
+                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                  `./group/lesson${selectedLesson}/sound/${i}.m4a`
+                );
+              } else {
+                audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+              }
+              return;
+            }
+          });
+
+          structureArea.appendChild(d);
+        }
+
+           const urls = [];
+for (let i = 1; i <= 20; i++) {
+  if (i === 14) continue;
+  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+}
+
+        setTimeout(() => AudioJoiner.preload(urls), 200);
+      }
+
+      function showSelection(){
+        audioBus.stopAll();
+        structureArea.style.display = 'none';
+        lessonSelect.style.display = 'block';
+        pbar.style.display = 'none';
+        showLessonChip(false);
+        clearSelection();
+      }
+
+      function exitProgram(){
+        audioBus.stopAll();
+        try { window.close(); } catch(e) {}
+        try { location.href = exitUrl; } catch(e) {}
+        setTimeout(() => {
+          try { location.replace('about:blank'); } catch(e) {}
+        }, 200);
+      }
+
+      document.addEventListener('click', ev => {
+        const btn = ev.target.closest && ev.target.closest('.buttonz');
+        if (!btn) return;
+
+        const action = btn.dataset.btn;
+
+        if (action === 'continue') {
+          if (structureArea.style.display === 'block') {
+            if (selectedLesson < 20) {
+              selectedLesson++;
+              audioBus.stopAll();
+              loadStructure();
+              updateLessonChip();
+              nudgeChip();
+            } else {
+              nudgeChip();
+            }
+          }
+          return;
+        }
+
+        if (action === 'exit') {
+          exitProgram();
+          return;
+        }
+
+        if (action === 'choosel') {
+          showSelection();
+          return;
+        }
+
+        if (action === 'goback') {
+          try {
+            window.open('./identity.html', '_blank', 'noopener,noreferrer');
+          } catch(e) {
+            location.href = './identity.html';
+          }
+          return;
+        }
+
+        if (action === 'email') {
+          const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
+          let win = null;
+
+          try {
+            win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
+          } catch(e) {
+            win = null;
+          }
+
+          if (!win) {
+            const a = document.createElement('a');
+            a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          return;
+        }
+
+        if (action === 'translate') {
+          audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
+          return;
+        }
+
+        if (action === 'help') {
+          alert('Botón de ayuda todavía no programado.');
+          return;
+        }
+
+        if (action === 'donate') {
+          alert('Botón de donación todavía no programado.');
+          return;
+        }
+      }, false);
+
+      window.addEventListener('pagehide', () => audioBus.stopAll());
+      window.addEventListener('beforeunload', () => audioBus.stopAll());
+    });
+  </script>
+</body>
+</html>
