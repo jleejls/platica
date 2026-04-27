@@ -137,9 +137,106 @@
       user-select: none;
       z-index: 50;
     }
+
+
+    /* DELAY BLANKET - lesson loading cover */
+    #delayBlanket{
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: linear-gradient(135deg, #fff7dc 0%, #f3dda1 45%, #fff4cf 100%);
+      color: #2b2208;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 28px;
+    }
+
+    #delayBlanket.show{
+      display: flex;
+    }
+
+    .delay-card{
+      max-width: 620px;
+      width: min(88vw, 620px);
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(120,90,20,0.25);
+      border-radius: 28px;
+      padding: clamp(24px, 5vw, 48px);
+      box-shadow: 0 18px 45px rgba(0,0,0,0.16);
+      backdrop-filter: blur(4px);
+    }
+
+    .delay-title{
+      margin: 0 0 10px;
+      font-size: clamp(2.2rem, 8vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.04em;
+      font-weight: 800;
+    }
+
+    .delay-credit{
+      margin: 8px 0;
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 650;
+    }
+
+    .delay-subtitle{
+      margin: 18px 0 8px;
+      font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+      opacity: 0.9;
+    }
+
+    .delay-spinner{
+      width: 54px;
+      height: 54px;
+      margin: 22px auto 0;
+      border: 7px solid rgba(70,50,5,0.18);
+      border-top-color: rgba(70,50,5,0.78);
+      border-radius: 50%;
+      animation: delaySpin 0.9s linear infinite;
+    }
+
+    @keyframes delaySpin{
+      to { transform: rotate(360deg); }
+    }
+
   </style>
 </head>
 <body>
+
+  <!-- DELAY BLANKET - lesson loading cover -->
+  <div id="delayBlanket" aria-live="polite" aria-busy="true">
+    
+<div class="delay-card">
+  <div class="delay-title">Plática</div>
+
+  <div id="creditsWrap" style="display:flex;justify-content:space-between;gap:30px;margin:20px 0;">
+    <div class="creditsColumn" style="width:45%;text-align:left;font-size:0.95rem;">
+      <h3 style="text-align:center;margin-bottom:8px;">Credits</h3>
+      <p><strong>Creator:</strong> Jimmy Lucky</p>
+      <p><strong>Assistant:</strong> AJ Cornell</p>
+      <p><strong>Design:</strong> José García</p>
+      <p><strong>Visuals:</strong> María Flores</p>
+    </div>
+
+    <div class="creditsColumn" style="width:45%;text-align:left;font-size:0.95rem;">
+      <h3 style="text-align:center;margin-bottom:8px;">Actors</h3>
+      <p>Jose Garcia</p>
+      <p>Susana Mejia</p>
+      <p>Beti Garcia</p>
+      <p>Trini Gomez</p>
+      <p>Roberto Gonzales</p>
+    </div>
+  </div>
+
+  <div class="delay-subtitle">Your lesson is being prepared...</div>
+  <div class="delay-spinner" aria-hidden="true"></div>
+</div>
+</div>
+
+  </div>
   <div id="lesson-select">
     <h2>Selecciona una lección:</h2>
     <div id="lesson-buttons"></div>
@@ -189,7 +286,9 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       const lessonButtonsEl = document.getElementById('lesson-buttons');
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
+      const delayBlanket    = document.getElementById('delayBlanket');
       const exitUrl         = 'about:blank';
+      const MINIMUM_CREDIT_TIME = 3000;
       let selectedLesson   = 1;
       let selectedPersonId = null;
       let highlightedBox   = null;
@@ -209,6 +308,40 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
             {duration:320,easing:'ease-out'}
           );
         } catch(e) {}
+      }
+
+      // DELAY BLANKET - lesson loading cover
+      function showDelayBlanket(){
+        delayBlanket.classList.add('show');
+        delayBlanket.setAttribute('aria-busy', 'true');
+      }
+
+      function hideDelayBlanket(){
+        delayBlanket.classList.remove('show');
+        delayBlanket.setAttribute('aria-busy', 'false');
+      }
+
+      function waitForImage(img){
+        return new Promise(resolve => {
+          if (img.complete) {
+            resolve();
+            return;
+          }
+
+          img.addEventListener('load', resolve, { once: true });
+          img.addEventListener('error', resolve, { once: true });
+        });
+      }
+
+      async function finishDelayBlanket(loadStartedAt, imagePromises){
+        await Promise.all(imagePromises);
+
+        const elapsed = Date.now() - loadStartedAt;
+        const remaining = Math.max(0, MINIMUM_CREDIT_TIME - elapsed);
+
+        setTimeout(() => {
+          hideDelayBlanket();
+        }, remaining);
       }
 
       const AudioJoiner = (() => {
@@ -391,6 +524,10 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       }
 
       function loadStructure(){
+        const loadStartedAt = Date.now();
+        const imagePromises = [];
+
+        showDelayBlanket();
         structureArea.innerHTML = '';
         clearSelection();
 
@@ -405,12 +542,13 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           d.style.left = pos.left;
           d.style.width = pos.width;
           d.style.height = pos.height;
-console.log("Selected lesson =", selectedLesson);
+
           const img = document.createElement('img');
-         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
-console.log("IMAGE LOAD:", { selectedLesson, i, url });
-img.src = url;
+          const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+          console.log("IMAGE LOAD:", { selectedLesson, i, url });
+          img.src = url;
           img.alt = `p${i}`;
+          imagePromises.push(waitForImage(img));
           d.appendChild(img);
 
           d.addEventListener('click', () => {
@@ -432,6 +570,8 @@ img.src = url;
                   `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
                   `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
+
+                clearSelection();
               } else {
                 audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
@@ -442,11 +582,13 @@ img.src = url;
           structureArea.appendChild(d);
         }
 
-           const urls = [];
-for (let i = 1; i <= 20; i++) {
-  if (i === 14) continue;
-  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-}
+        finishDelayBlanket(loadStartedAt, imagePromises);
+
+        const urls = [];
+        for (let i = 1; i <= 20; i++) {
+          if (i === 14) continue;
+          urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+        }
 
         setTimeout(() => AudioJoiner.preload(urls), 200);
       }
