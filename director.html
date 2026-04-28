@@ -252,6 +252,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 </div>
 
   <div id="pbar" class="zipbutton">
+    
     <div class="buttonz" data-btn="continue" title="Continuar (siguiente lección)">
       <img src="./trigger/adelante.png" alt="Adelante">
     </div>
@@ -264,12 +265,14 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     <div class="buttonz" data-btn="help" title="Ayuda">
       <img src="./trigger/help.png" alt="Help">
     </div>
-    <div class="buttonz" data-btn="donate" title="Donar">
-      <img src="./trigger/donate.png" alt="Donate">
-    </div>
-  <!--  <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
-      <img src="./trigger/email.png" alt="email">
-    </div> -->
+ <div class="buttonz" data-btn="email" title="Contact Jimmy Lucky">
+  <img src="./trigger/email.png" alt="email">
+</div>
+
+<div class="buttonz" data-btn="donate" title="Donar">
+  <img src="./trigger/donate.png" alt="Donate">
+</div>
+ 
     <div class="buttonz" data-btn="goback" title="Volver">
       <img src="./trigger/goback.png" alt="Back">
     </div>
@@ -279,7 +282,32 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
   </div>
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
-
+   <div id="contactOverlay" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  z-index:9999;
+  justify-content:center;
+  align-items:center;
+">
+  <div style="
+    background:white;
+    color:black;
+    padding:25px;
+    border-radius:12px;
+    max-width:430px;
+    text-align:center;
+    font-family:Arial, sans-serif;
+  ">
+    <h2>Contact Jimmy Lucky</h2>
+    <p>To contact Jimmy Lucky, please leave Plática and open your own email program.</p>
+    <p>You may write in English or Spanish.</p>
+    <p>Send your message to:</p>
+    <p><b>spanishsoundbites@gmail.com</b></p>
+    <button onclick="closeContactOverlay()">Go Back to Plática</button>
+  </div>
+</div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const lessonSelect    = document.getElementById('lesson-select');
@@ -653,26 +681,9 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         }
 
         if (action === 'email') {
-          const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
-          let win = null;
-
-          try {
-            win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
-          } catch(e) {
-            win = null;
-          }
-
-          if (!win) {
-            const a = document.createElement('a');
-            a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
-            a.target = '_blank';
-            a.rel = 'noopener';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }
-          return;
-        }
+  openContactOverlay();
+  return;
+}
 
         if (action === 'translate') {
           audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
@@ -693,6 +704,13 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       window.addEventListener('pagehide', () => audioBus.stopAll());
       window.addEventListener('beforeunload', () => audioBus.stopAll());
     });
+    function openContactOverlay() {
+  document.getElementById("contactOverlay").style.display = "flex";
+}
+
+function closeContactOverlay() {
+  document.getElementById("contactOverlay").style.display = "none";
+}
   </script>
 </body>
 </html>
