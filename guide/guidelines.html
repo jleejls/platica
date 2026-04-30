@@ -404,8 +404,22 @@
       }
     });
 
-returnToDirector.addEventListener('click', () => {
-  window.location.href = "/director.html";
+   /*  returnToDirector.addEventListener('click', () => {
+     window.location.href = "/director.html";
+    }); 
+
+     returnToDirector.addEventListener('click', () => {
+     window.close();
+     else {
+     history.back();
+     } */
+
+   returnToDirector.addEventListener('click', () => {
+  if (window.opener) {
+    window.close();
+  } else {
+    history.back();
+  }
 });
 
     guideAudio.addEventListener('loadedmetadata', () => {
