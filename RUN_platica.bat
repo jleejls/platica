@@ -8,7 +8,7 @@ echo NOW SERVING FROM:
 cd
 echo.
 echo Opening browser...
-start http://localhost:8011/index.html
+start http://localhost:8022/index.html
 echo.
-python -m http.server 8011
+python -m http.server 8022
 pause
