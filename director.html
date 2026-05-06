@@ -208,14 +208,14 @@
 
   <!-- DELAY BLANKET - lesson loading cover -->
   <div id="delayBlanket" aria-live="polite" aria-busy="true">
-    
+   
 <div class="delay-card">
   <div class="delay-title">Plática</div>
-      <h4>This is a project under construction -- there could be errors</h4>
+
+  <h5>This is a project under construction -- there could be errors</h5>
 
   <!-- Credits section -->
-  <div id="creditsWrap" style="display:flex; justify-content:space-between; gap:30px; margin:20px 0;">
-
+ 
   <div id="creditsWrap" style="display:flex;justify-content:space-between;gap:30px;margin:20px 0;">
     <div class="creditsColumn" style="width:45%;text-align:left;font-size:0.95rem;">
       <h3 style="text-align:center;margin-bottom:8px;">Credits</h3>
@@ -240,7 +240,7 @@
   <div class="delay-subtitle">Your lesson is being prepared...</div>
   <div class="delay-spinner" aria-hidden="true"></div>
 </div>
-</div>
+
 
   </div>
   <div id="lesson-select">
@@ -566,6 +566,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         clearSelection();
 
         for(let i = 1; i <= 22; i++){
+          if (i === 3) continue;
           if (i === 13) continue;
           const d = document.createElement('div');
           d.className = 'box';
@@ -620,6 +621,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 
         const urls = [];
         for (let i = 1; i <= 20; i++) {
+          if (i === 3) continue;
           if (i === 14) continue;
           urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
         }

@@ -58,7 +58,7 @@
       font-family: sans-serif;
     }
 
-    button {
+    button 
       font-size: 18px;
       background-color: #007BFF;
       color: white;
@@ -72,63 +72,67 @@
 </head>
 <body>
 
-  <!-- 10 interactive boxes with images -->
-  <div id="box10" class="box" style="top: 58vh; left: 12vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p1.png" alt="1"></div>
-  <div id="box2" class="box" style="top: 58vh; left: 37vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p2.png" alt="2"></div>
-  <div id="box3" class="box" style="top: 58vh; left: 58vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p3.png" alt="3"></div>
-  <div id="box4" class="box" style="top: 58vh; left: 75vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p4.png" alt="4"></div>
-  <div id="box5" class="box" style="top: 29vh; left: 12vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p5.png" alt="5"></div>
-  <div id="box6" class="box" style="top: 29vh; left: 37vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p6.png" alt="6"></div>
-  <div id="box7" class="box" style="top: 29vh; left: 58vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p7.png" alt="7"></div>
-  <div id="box8" class="box" style="top: 2vh; left: 12vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p8.png" alt="8"></div>
-  <div id="box9" class="box" style="top: 2vh; left: 37vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p9.png" alt="9"></div>
-  <div id="box1" class="box" style="top: 2vh; left: 58vw; width: 24vh; height: 24vh;"><img src="pronouns/images/p10.png" alt="10"></div>
+  <div id="box10" class="box" style="top: 3vh; left: 60vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p10.png" alt="10"></div>
+  <div id="box9" class="box" style="top: 3vh; left: 37vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p9.png" alt="9"></div>
+  <div id="box8" class="box" style="top: 3vh; left: 12vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p8.png" alt="8"></div>
+  <div id="box7" class="box" style="top: 31vh; left: 12vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p7.png" alt="7"></div>
+  <div id="box6" class="box" style="top: 31vh; left: 37vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p6.png" alt="6"></div>
+  <div id="box5" class="box" style="top: 31vh; left: 60vw; width: 14vw; height: 27vh;"><img src="./pronouns/images/p5.png" alt="5"></div>,
+  <div id="box4" class="box" style="top: 61vh; left: 60vw; width: 14vw; height: 27vh;",><img src="./pronouns/images/p4.png" alt="4"></div>
+  <div id="box3" class="box" style="display:none;"></div>
+  <div id="box2" class="box" style="top: 61vh; left: 37vw; width: 14vw; height: 27vh;"><img src="./pronouns/images/p2.png" alt="2"></div> 
+  <div id="box1" class="box" style="top: 61vh; left: 12vw; width: 14vw; height: 27vh;"><img src="./pronouns/images/p1.png" alt="1"></div>
 
   <!-- Return button (English) -->
   <div style="text-align: center; margin-top: 10px;">
-    <button onclick="location.href='director.html'" style="position:absolute;top:83vh;">
+    <button onclick="location.href='./director.html'" style="position:absolute;top:90vh;">
       Continuar
     </button>
   </div>
 
   <audio id="player"></audio>
 
-  <script>
-    const AUDIO_BASE = 'pronouns/audio/';
+<script>
+  
+  const AUDIO_BASE = './pronouns/audio/';
 
-    function playAny(n) {
-      const files = [
-        `${AUDIO_BASE}${n}.M4a`,
-        `${AUDIO_BASE}${n}.m4a`,
-        `${AUDIO_BASE}${n}.mp3`
-      ];
-      let i = 0;
-      const a = new Audio(files[i]);
-      a.onerror = () => {
-        if (++i < files.length) {
-          a.src = files[i];
-          a.play().catch(()=>{});
-        }
-      };
-      a.play().catch(()=>{});
-    }
+ function playAny(n) {
+  const stamp = Date.now();
+  const files = [
+    `${AUDIO_BASE}${n}.m4a?v=${stamp}`,
+    `${AUDIO_BASE}${n}.mp3?v=${stamp}`,
+    `${AUDIO_BASE}${n}.wav?v=${stamp}`
+  ];
 
-    // Wire boxes 1..10 → play 1..10 from folder
-    for (let n = 1; n <= 10; n++) {
-      const el = document.getElementById('box' + n);
-      if (!el) continue;
-      el.style.cursor = 'pointer';
-      el.setAttribute('role', 'button');
-      el.setAttribute('tabindex', '0');
-      el.addEventListener('click', () => playAny(String(n)));
-      el.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          playAny(String(n));
-        }
-      });
-    }
-  </script>
+    let i = 0;
+    let a = new Audio(files[i]);
 
+    a.onerror = () => {
+      i++;
+      if (i < files.length) {
+        a = new Audio(files[i]);  // recreate with next file
+        a.play().catch(() => {});
+      }
+    };
+
+    a.play().catch(() => {});
+  }
+
+  // Wire boxes 1–10 → play 1–10 from folder
+  for (let n = 1; n <= 10; n++) {
+    const el = document.getElementById('box' + n);
+    if (!el) continue;
+    el.style.cursor = 'pointer';
+    el.setAttribute('role', 'button');
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('click', () => playAny(n));
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        playAny(n);
+      }
+    });
+  }
+</script>
 </body>
 </html>
