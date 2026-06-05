@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Spanish Sound Bites - administrator</title>
+  <title>Plática Main Director</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
@@ -125,8 +125,8 @@
 
     #lesson-chip{
       position: fixed;
-      bottom: 15vh;
-      right:16vw;
+      bottom: 17vh;
+      right:20vw;
       background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 10px;
@@ -137,117 +137,9 @@
       user-select: none;
       z-index: 50;
     }
-
-
-    /* DELAY BLANKET - lesson loading cover */
-    #delayBlanket{
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      background: linear-gradient(135deg, #fff7dc 0%, #f3dda1 45%, #fff4cf 100%);
-      color: #2b2208;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 28px;
-    }
-
-    #delayBlanket.show{
-      display: flex;
-    }
-
-    .delay-card{
-      max-width: 620px;
-      width: min(88vw, 620px);
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(120,90,20,0.25);
-      border-radius: 28px;
-      padding: clamp(24px, 5vw, 48px);
-      box-shadow: 0 18px 45px rgba(0,0,0,0.16);
-      backdrop-filter: blur(4px);
-    }
-
-    .delay-title{
-      margin: 0 0 10px;
-      font-size: clamp(2.2rem, 8vw, 5rem);
-      line-height: 1;
-      letter-spacing: 0.04em;
-      font-weight: 800;
-    }
-
-    .delay-credit{
-      margin: 8px 0;
-      font-size: clamp(1rem, 2.5vw, 1.35rem);
-      font-weight: 650;
-    }
-
-    .delay-subtitle{
-      margin: 18px 0 8px;
-      font-size: clamp(0.95rem, 2.2vw, 1.15rem);
-      opacity: 0.9;
-    }
-
-    .delay-spinner{
-      width: 54px;
-      height: 54px;
-      margin: 22px auto 0;
-      border: 7px solid rgba(70,50,5,0.18);
-      border-top-color: rgba(70,50,5,0.78);
-      border-radius: 50%;
-      animation: delaySpin 0.9s linear infinite;
-    }
-
-    @keyframes delaySpin{
-      to { transform: rotate(360deg); }
-    }
-
   </style>
 </head>
 <body>
-
-  <!-- DELAY BLANKET - lesson loading cover -->
-  <div id="delayBlanket" aria-live="polite" aria-busy="true">
-   
-<div class="delay-card">
-  <div class="delay-title">Plática</div>
-
-  <h5>This is a project under construction -- there could be errors</h5>
-
-  <!-- Credits section -->
- 
-  <div id="creditsWrap" style="display:flex;justify-content:space-between;gap:30px;margin:20px 0;">
-    <div class="creditsColumn" style="width:45%;text-align:left;font-size:0.95rem;">
-      <h3 style="text-align:center;margin-bottom:8px;">Credits</h3>
-      <p><strong>Creator:</strong> Jimmy Lucky</p>
-      <p><strong>Assistant:</strong> AJ Cornell</p>
-      <p><strong>Design:</strong> José García</p>
-      <p><strong>Female voice:</strong> Reina Maldonado</p>
-      <p><strong>Male voice:</strong> Jimmy Self</p>
-    </div>
-
-    <div class="creditsColumn" style="width:45%;text-align:left;font-size:0.95rem;">
-      <h3 style="text-align:center;margin-bottom:8px;">Actors</h3>
-     Jose Garcia<br>
-     Susana Mejia <br>
-     Irene Garcia<br>
-     Trini Gomez<br>
-     Roberto Gonzales<br>
-     Norman Cruz<br>
-      <h3 style="text-align:center;margin-bottom:8px;">Extras</h3>
-     Miguel Montoya<br>
-     Francisco <br>
-     Elizabet Cornell<br>
-     Carmen Vasquez<br>
-    </div>
-  </div>
-
-  <div class="delay-subtitle">Your lesson is being prepared...</div>
-  <div class="delay-spinner" aria-hidden="true"></div>
-</div>
-
-
-  </div>
   <div id="lesson-select">
     <h2>Selecciona una lección:</h2>
     <div id="lesson-buttons"></div>
@@ -262,7 +154,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 </div>
 
   <div id="pbar" class="zipbutton">
-    
     <div class="buttonz" data-btn="continue" title="Continuar (siguiente lección)">
       <img src="./trigger/adelante.png" alt="Adelante">
     </div>
@@ -275,14 +166,12 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     <div class="buttonz" data-btn="help" title="Ayuda">
       <img src="./trigger/help.png" alt="Help">
     </div>
- <div class="buttonz" data-btn="email" title="Contact Jimmy Lucky">
-  <img src="./trigger/email.png" alt="email">
-</div>
-
-<div class="buttonz" data-btn="donate" title="Donar">
-  <img src="./trigger/donate.png" alt="Donate">
-</div>
- 
+    <div class="buttonz" data-btn="donate" title="Donar">
+      <img src="./trigger/donate.png" alt="Donate">
+    </div>
+    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
+      <img src="./trigger/email.png" alt="email">
+    </div>
     <div class="buttonz" data-btn="goback" title="Volver">
       <img src="./trigger/goback.png" alt="Back">
     </div>
@@ -292,32 +181,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
   </div>
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
-   <div id="contactOverlay" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.65);
-  z-index:9999;
-  justify-content:center;
-  align-items:center;
-">
-  <div style="
-    background:white;
-    color:black;
-    padding:25px;
-    border-radius:12px;
-    max-width:430px;
-    text-align:center;
-    font-family:Arial, sans-serif;
-  ">
-    <h2>Contact Jimmy Lucky</h2>
-    <p>To contact Jimmy Lucky, please leave Plática and open your own email program.</p>
-    <p>You may write in English or Spanish.</p>
-    <p>Send your message to:</p>
-    <p><b>spanishsoundbites@gmail.com</b></p>
-    <button onclick="closeContactOverlay()">Go Back to Plática</button>
-  </div>
-</div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const lessonSelect    = document.getElementById('lesson-select');
@@ -325,9 +189,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       const lessonButtonsEl = document.getElementById('lesson-buttons');
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
-      const delayBlanket    = document.getElementById('delayBlanket');
       const exitUrl         = 'about:blank';
-      const MINIMUM_CREDIT_TIME = 3000;
       let selectedLesson   = 1;
       let selectedPersonId = null;
       let highlightedBox   = null;
@@ -347,40 +209,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
             {duration:320,easing:'ease-out'}
           );
         } catch(e) {}
-      }
-
-      // DELAY BLANKET - lesson loading cover
-      function showDelayBlanket(){
-        delayBlanket.classList.add('show');
-        delayBlanket.setAttribute('aria-busy', 'true');
-      }
-
-      function hideDelayBlanket(){
-        delayBlanket.classList.remove('show');
-        delayBlanket.setAttribute('aria-busy', 'false');
-      }
-
-      function waitForImage(img){
-        return new Promise(resolve => {
-          if (img.complete) {
-            resolve();
-            return;
-          }
-
-          img.addEventListener('load', resolve, { once: true });
-          img.addEventListener('error', resolve, { once: true });
-        });
-      }
-
-      async function finishDelayBlanket(loadStartedAt, imagePromises){
-        await Promise.all(imagePromises);
-
-        const elapsed = Date.now() - loadStartedAt;
-        const remaining = Math.max(0, MINIMUM_CREDIT_TIME - elapsed);
-
-        setTimeout(() => {
-          hideDelayBlanket();
-        }, remaining);
       }
 
       const AudioJoiner = (() => {
@@ -507,16 +335,47 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         'Hacer','Quedar'
       ];
 
+      // Main-path director routing.
+      // The lesson is always selected here in the main path.
+      // On a phone-sized screen, the selected lesson is saved in sessionStorage
+      // and the learner is sent to the phone structure.
+      // On a desktop-sized screen, this same file loads the desktop structure.
+      const PHONE_STRUCTURE_URL = './platica_phone/structure.html';
+      const PHONE_WIDTH_LIMIT = 700;
+
+      function shouldUsePhonePath(){
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('phone') === '1') return true;
+        if (params.get('desktop') === '1') return false;
+        return window.matchMedia(`(max-width: ${PHONE_WIDTH_LIMIT}px)`).matches;
+      }
+
+      function saveSelectedLesson(n){
+        selectedLesson = n;
+        sessionStorage.setItem('lesson', String(n));
+        sessionStorage.setItem('selectedLesson', String(n));
+        sessionStorage.setItem('currentLesson', String(n));
+        if (!sessionStorage.getItem('tense')) {
+          sessionStorage.setItem('tense', 'now');
+        }
+      }
+
       for(let i = 1; i <= 20; i++){
         const btn = document.createElement('button');
         btn.textContent = `Lección ${i} — ${VERBS[i]}`;
         btn.className = 'nav-button';
         btn.addEventListener('click', () => {
-          selectedLesson = i;
+          saveSelectedLesson(i);
+          audioBus.stopAll();
+
+          if (shouldUsePhonePath()) {
+            window.location.href = PHONE_STRUCTURE_URL;
+            return;
+          }
+
           lessonSelect.style.display = 'none';
           structureArea.style.display = 'block';
           pbar.style.display = 'flex';
-          audioBus.stopAll();
           loadStructure();
           updateLessonChip();
           showLessonChip(true);
@@ -545,8 +404,8 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         18: { top: '2vh',  left: '14vw', width: '14vw', height: '27vh' },
         19: { top: '2vh',  left: '37vw', width: '14vw', height: '27vh' },
         20: { top: '2vh',  left: '60vw', width: '14vw', height: '27vh' },
-        21: { top: '2vh',  left: '74vw', width: '10vw', height: '18vh' },
-        22: { top: '31vh', left: '74vw', width: '10vw', height: '18vh' }
+        21: { top: '2vh',  left: '74vw', width: '14vw', height: '27vh' },
+        22: { top: '31vh', left: '74vw', width: '14vw', height: '27vh' }
       };
 
       function clearSelection(){
@@ -563,10 +422,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       }
 
       function loadStructure(){
-        const loadStartedAt = Date.now();
-        const imagePromises = [];
-
-        showDelayBlanket();
         structureArea.innerHTML = '';
         clearSelection();
 
@@ -581,13 +436,12 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           d.style.left = pos.left;
           d.style.width = pos.width;
           d.style.height = pos.height;
-
+console.log("Selected lesson =", selectedLesson);
           const img = document.createElement('img');
-          const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
-          console.log("IMAGE LOAD:", { selectedLesson, i, url });
-          img.src = url;
+         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+console.log("IMAGE LOAD:", { selectedLesson, i, url });
+img.src = url;
           img.alt = `p${i}`;
-          imagePromises.push(waitForImage(img));
           d.appendChild(img);
 
           d.addEventListener('click', () => {
@@ -609,8 +463,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
                   `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
                   `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
-
-                clearSelection();
               } else {
                 audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
@@ -621,13 +473,11 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           structureArea.appendChild(d);
         }
 
-        finishDelayBlanket(loadStartedAt, imagePromises);
-
-        const urls = [];
-        for (let i = 1; i <= 20; i++) {
-          if (i === 14) continue;
-          urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
-        }
+           const urls = [];
+for (let i = 1; i <= 20; i++) {
+  if (i === 14) continue;
+  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+}
 
         setTimeout(() => AudioJoiner.preload(urls), 200);
       }
@@ -660,6 +510,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           if (structureArea.style.display === 'block') {
             if (selectedLesson < 20) {
               selectedLesson++;
+              saveSelectedLesson(selectedLesson);
               audioBus.stopAll();
               loadStructure();
               updateLessonChip();
@@ -691,18 +542,34 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         }
 
         if (action === 'email') {
-  openContactOverlay();
-  return;
-}
+          const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
+          let win = null;
+
+          try {
+            win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
+          } catch(e) {
+            win = null;
+          }
+
+          if (!win) {
+            const a = document.createElement('a');
+            a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          }
+          return;
+        }
 
         if (action === 'translate') {
           audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
           return;
         }
 
-  if (action === 'help') {
-          audioBus.playOne
-          window.open("./guide/guidelines.html", "_blank");
+        if (action === 'help') {
+          alert('Botón de ayuda todavía no programado.');
           return;
         }
 
@@ -715,13 +582,6 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       window.addEventListener('pagehide', () => audioBus.stopAll());
       window.addEventListener('beforeunload', () => audioBus.stopAll());
     });
-    function openContactOverlay() {
-  document.getElementById("contactOverlay").style.display = "flex";
-}
-
-function closeContactOverlay() {
-  document.getElementById("contactOverlay").style.display = "none";
-}
   </script>
 </body>
 </html>
