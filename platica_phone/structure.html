@@ -10,17 +10,19 @@
 /*
   PLÁTICA PHONE STRUCTURE - 12 + GAP + 10 FRAME PLAN
 
-  This file belongs inside the platica_phone folder.
-  It does NOT open a phone lessonselect page.
+  Put this file inside:
+    platica_phone/structure.html
 
-  The main-path lessonselect.html chooses the lesson first and stores it in
-  sessionStorage. This phone structure file preserves that lesson choice,
-  prepares the phone-frame plan, then opens director.html in the same folder.
+  The main desktop director chooses the lesson, stores it in sessionStorage,
+  and sends phone-sized screens here.
 
-  New phone layout plan:
-    - 12 upper pronoun/person/expression frames: 4 rows of 3
+  This file prepares the exact phone layout plan, then opens the phone
+  director.html in this same platica_phone folder.
+
+  Layout:
+    - p11-p22: 12 upper frames, 4 rows of 3
     - separator gap
-    - 10 lower object frames: 3-4-3
+    - p1-p10: 10 lower object frames, 3-4-3
 */
 (function () {
   const storedLesson =
@@ -36,21 +38,6 @@
   sessionStorage.setItem("selectedLesson", lessonToUse);
   sessionStorage.setItem("currentLesson", lessonToUse);
 
-  // 12 upper frames: p11 through p22.
-  const pronounSlots = [];
-  for (let id = 11; id <= 22; id++) {
-    pronounSlots.push({ id: id, kind: "main" });
-  }
-
-  // 10 lower object frames: p1 through p10.
-  const objectSlots = [];
-  for (let id = 1; id <= 10; id++) {
-    objectSlots.push({ id: id });
-  }
-
-  // Row-by-row layout plan for a director that respects row definitions.
-  // The gap row is intentional and should be rendered as vertical space,
-  // not as an image frame.
   const phoneLayoutRows = [
     { group: "pronouns", columns: 3, ids: [11, 12, 13] },
     { group: "pronouns", columns: 3, ids: [14, 15, 16] },
@@ -63,6 +50,16 @@
     { group: "objects", columns: 4, ids: [4, 5, 6, 7] },
     { group: "objects", columns: 3, ids: [8, 9, 10] }
   ];
+
+  const pronounSlots = [];
+  for (let id = 11; id <= 22; id++) {
+    pronounSlots.push({ id: id, kind: "main" });
+  }
+
+  const objectSlots = [];
+  for (let id = 1; id <= 10; id++) {
+    objectSlots.push({ id: id, kind: "object" });
+  }
 
   const combinedSlots = [];
   phoneLayoutRows.forEach(row => {
@@ -81,19 +78,18 @@
     });
   });
 
+  sessionStorage.setItem("phoneLayoutRows", JSON.stringify(phoneLayoutRows));
   sessionStorage.setItem("pronounSlots", JSON.stringify(pronounSlots));
   sessionStorage.setItem("objectSlots", JSON.stringify(objectSlots));
-  sessionStorage.setItem("phoneLayoutRows", JSON.stringify(phoneLayoutRows));
   sessionStorage.setItem("combinedPhoneSlots", JSON.stringify(combinedSlots));
 
-  // In this 12-frame upper plan, p21 and p22 remain expression-style frames.
+  // p21 and p22 behave like expression frames.
   sessionStorage.setItem("expressionPronounIds", JSON.stringify([21, 22]));
 
   if (!sessionStorage.getItem("tense")) {
     sessionStorage.setItem("tense", "now");
   }
 
-  // Correct phone path: same folder, phone director.
   window.location.replace("director.html");
 })();
 </script>
