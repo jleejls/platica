@@ -2,9 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Plática Phone Director</title>
+  <title>Plática Main Director</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    :root{
+      --gap: 4px;
+      --slot-radius: 14px;
+      --slot-border: 1px solid #ccc;
+      --slot-hover: turquoise;
+      --focus: 2px solid #1976d2;
+    }
+
     * { box-sizing: border-box; }
 
     body{
@@ -13,13 +21,49 @@
       background:#f0f8ff;
       color:#111;
       line-height:1.35;
-      overflow:hidden;
     }
+
+    #lesson-select{
+      padding: 20px 16px 28px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    #lesson-select h2{
+      margin: 8px 0 10px;
+      font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    }
+
+    #lesson-buttons{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--gap);
+      align-items: stretch;
+    }
+
+    .nav-button{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 12px;
+      border: var(--slot-border);
+      border-radius: var(--slot-radius);
+      background: white;
+      cursor:pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align:center;
+      transition: background .15s ease;
+    }
+
+    .nav-button:hover{ background: var(--slot-hover); }
+    .nav-button:focus{ outline: var(--focus); }
 
     #structure{
       position: relative;
-      width: 100vw;
+      width: 100%;
       height: 100vh;
+      display: none;
       background-color: #f0f8ff;
       overflow: hidden;
     }
@@ -33,11 +77,6 @@
       color:black;
     }
 
-    .box.circle{
-      border-radius: 50%;
-      overflow: hidden;
-    }
-
     .box img{
       width:100%;
       height:100%;
@@ -45,41 +84,34 @@
       display:block;
     }
 
-    .box.circle img{
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
     .zipbutton{
-      display:flex;
+      display:none;
       flex-direction:row;
       align-items:center;
       justify-content:center;
-      gap:1.5vw;
+      gap:2vh;
       position:fixed;
-      bottom:1.2vh;
+      bottom:2vh;
       left:50%;
       transform:translateX(-50%);
       background-color:#f0f0f0;
-      padding:4px 6px;
+      padding:6px 10px;
       border-radius:10px;
       border:1px solid #ddd;
       z-index: 50;
-      max-width: 98vw;
     }
 
     .buttonz{
       border:2px solid #4CAF50;
       border-radius:1vw;
       height:5vh;
-      width:10.5vw;
-      min-width:34px;
-      min-height:30px;
-      max-width:46px;
+      width:5vw;
+      min-width:56px;
+      min-height:36px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:12px;
+      font-size:14px;
       background-color:#d05000;
       cursor: pointer;
     }
@@ -93,15 +125,14 @@
 
     #lesson-chip{
       position: fixed;
-      bottom: 8.2vh;
-      right: 2vw;
+      bottom: 17vh;
+      right:20vw;
       background: #ffffff;
       border: 1px solid #ddd;
       border-radius: 10px;
-      padding: 4px 8px;
+      padding: 6px 10px;
       font-weight: 700;
-      font-size: 12px;
-      display: block;
+      display: none;
       box-shadow: 0 2px 6px rgba(0,0,0,.08);
       user-select: none;
       z-index: 50;
@@ -109,32 +140,43 @@
   </style>
 </head>
 <body>
-  <div id="structure"></div>
+  <div id="lesson-select">
+    <h2>Selecciona una lección:</h2>
+    <div id="lesson-buttons"></div>
+  </div>
+
+  <div id="structure">
+
+<div style="background:yellow;color:black;font-size:22px;padding:6px;">
+ADMINISTRATOR LESSON STRUCTURE LOADED
+</div>
+
+</div>
 
   <div id="pbar" class="zipbutton">
-    <div class="buttonz" data-btn="continue" title="Continuar">
-      <img src="../trigger/adelante.png" alt="Adelante">
+    <div class="buttonz" data-btn="continue" title="Continuar (siguiente lección)">
+      <img src="./trigger/adelante.png" alt="Adelante">
     </div>
-    <div class="buttonz" data-btn="exit" title="Salir">
-      <img src="../trigger/exit.png" alt="exit">
+    <div class="buttonz" data-btn="exit" title="Salir del programa">
+      <img src="./trigger/exit.png" alt="exit">
     </div>
-    <div class="buttonz" data-btn="choosel" title="Lecciones">
-      <img src="../trigger/choosel.png" alt="choosel">
+    <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
+      <img src="./trigger/choosel.png" alt="choosel">
     </div>
     <div class="buttonz" data-btn="help" title="Ayuda">
-      <img src="../trigger/help.png" alt="Help">
+      <img src="./trigger/help.png" alt="Help">
     </div>
     <div class="buttonz" data-btn="donate" title="Donar">
-      <img src="../trigger/donate.png" alt="Donate">
+      <img src="./trigger/donate.png" alt="Donate">
     </div>
-    <div class="buttonz" data-btn="email" title="Correo">
-      <img src="../trigger/email.png" alt="email">
+    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
+      <img src="./trigger/email.png" alt="email">
     </div>
     <div class="buttonz" data-btn="goback" title="Volver">
-      <img src="../trigger/goback.png" alt="Back">
+      <img src="./trigger/goback.png" alt="Back">
     </div>
     <div class="buttonz" data-btn="translate" title="Traducir">
-      <img src="../trigger/translate.png" alt="Translate">
+      <img src="./trigger/translate.png" alt="Translate">
     </div>
   </div>
 
@@ -142,24 +184,19 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const structureArea = document.getElementById('structure');
-      const lessonChip = document.getElementById('lesson-chip');
-
-      const storedLesson =
-        sessionStorage.getItem("selectedLesson") ||
-        sessionStorage.getItem("lesson") ||
-        sessionStorage.getItem("currentLesson") ||
-        "1";
-
-      let selectedLesson = Number(storedLesson);
-      if (!Number.isFinite(selectedLesson) || selectedLesson < 1) selectedLesson = 1;
-
-      sessionStorage.setItem("lesson", String(selectedLesson));
-      sessionStorage.setItem("selectedLesson", String(selectedLesson));
-      sessionStorage.setItem("currentLesson", String(selectedLesson));
-
+      const lessonSelect    = document.getElementById('lesson-select');
+      const structureArea   = document.getElementById('structure');
+      const lessonButtonsEl = document.getElementById('lesson-buttons');
+      const pbar            = document.getElementById('pbar');
+      const lessonChip      = document.getElementById('lesson-chip');
+      const exitUrl         = 'about:blank';
+      let selectedLesson   = 1;
       let selectedPersonId = null;
-      let highlightedBox = null;
+      let highlightedBox   = null;
+
+      function showLessonChip(show){
+        lessonChip.style.display = show ? 'block' : 'none';
+      }
 
       function updateLessonChip(){
         lessonChip.textContent = `Lección ${selectedLesson}`;
@@ -291,6 +328,98 @@
         return { playOne, playChain, stopAll };
       })();
 
+      const VERBS = [
+        null,'Tener','Querer','Decir','Estar','Necesitar',
+        'Ir','Saber','Venir','Comer','Tomar','Hablar',
+        'Ver','Ser','Poder','Vivir','Haber','Dar','Poner',
+        'Hacer','Quedar'
+      ];
+
+      // Main-path director routing.
+      // This is the ROOT desktop/main director.
+      // Desktop structure is built below by this file's own frameMap.
+      // Phone-sized touch devices are redirected to the semi-modular phone structure file.
+      // A narrow desktop browser window is NOT automatically treated as phone.
+      const PHONE_STRUCTURE_URL = './platica_phone/structure.html';
+      const PHONE_WIDTH_LIMIT = 700;
+
+      function shouldUsePhonePath(){
+        const params = new URLSearchParams(window.location.search);
+
+        // Manual overrides for testing.
+        // Add ?phone=1 to force the phone path.
+        // Add ?desktop=1 to force the desktop path.
+        if (params.get('phone') === '1') return true;
+        if (params.get('desktop') === '1') return false;
+
+        const narrowScreen = window.matchMedia(`(max-width: ${PHONE_WIDTH_LIMIT}px)`).matches;
+
+        // This prevents a narrowed desktop browser window from being mistaken for a phone.
+        // A real phone normally has a coarse pointer and/or touch points.
+        const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+        const hasTouch = navigator.maxTouchPoints && navigator.maxTouchPoints > 0;
+
+        return narrowScreen && (coarsePointer || hasTouch);
+      }
+
+      function saveSelectedLesson(n){
+        selectedLesson = n;
+        sessionStorage.setItem('lesson', String(n));
+        sessionStorage.setItem('selectedLesson', String(n));
+        sessionStorage.setItem('currentLesson', String(n));
+        if (!sessionStorage.getItem('tense')) {
+          sessionStorage.setItem('tense', 'now');
+        }
+      }
+
+      for(let i = 1; i <= 20; i++){
+        const btn = document.createElement('button');
+        btn.textContent = `Lección ${i} — ${VERBS[i]}`;
+        btn.className = 'nav-button';
+        btn.addEventListener('click', () => {
+          saveSelectedLesson(i);
+          audioBus.stopAll();
+
+          if (shouldUsePhonePath()) {
+            window.location.href = PHONE_STRUCTURE_URL;
+            return;
+          }
+
+          lessonSelect.style.display = 'none';
+          structureArea.style.display = 'block';
+          pbar.style.display = 'flex';
+          loadStructure();
+          updateLessonChip();
+          showLessonChip(true);
+        });
+        lessonButtonsEl.appendChild(btn);
+      }
+
+      const frameMap = {
+        1:  { top: '2vh',  left: '2vw',  width: '10vw', height: '17vh' },
+        2:  { top: '21vh', left: '2vw',  width: '10vw', height: '17vh' },
+        3:  { top: '41vh', left: '2vw',  width: '10vw', height: '17vh' },
+        4:  { top: '61vh', left: '2vw',  width: '10vw', height: '17vh' },
+        5:  { top: '81vh', left: '2vw',  width: '10vw', height: '17vh' },
+        6:  { top: '2vh',  left: '88vw', width: '10vw', height: '17vh' },
+        7:  { top: '21vh', left: '88vw', width: '10vw', height: '17vh' },
+        8:  { top: '41vh', left: '88vw', width: '10vw', height: '17vh' },
+        9:  { top: '61vh', left: '88vw', width: '10vw', height: '17vh' },
+        10: { top: '81vh', left: '88vw', width: '10vw', height: '17vh' },
+        11: { top: '61vh', left: '14vw', width: '14vw', height: '27vh' },
+        12: { top: '61vh', left: '37vw', width: '14vw', height: '27vh' },
+        13: { top: '61vh', left: '74vw', width: '14vw', height: '27vh' },
+        14: { top: '61vh', left: '60vw', width: '14vw', height: '27vh' },
+        15: { top: '31vh', left: '37vw', width: '14vw', height: '27vh' },
+        16: { top: '31vh', left: '60vw', width: '14vw', height: '27vh' },
+        17: { top: '31vh', left: '14vw', width: '14vw', height: '27vh' },
+        18: { top: '2vh',  left: '14vw', width: '14vw', height: '27vh' },
+        19: { top: '2vh',  left: '37vw', width: '14vw', height: '27vh' },
+        20: { top: '2vh',  left: '60vw', width: '14vw', height: '27vh' },
+        21: { top: '2vh',  left: '74vw', width: '14vw', height: '27vh' },
+        22: { top: '31vh', left: '74vw', width: '14vw', height: '27vh' }
+      };
+
       function clearSelection(){
         selectedPersonId = null;
         if (highlightedBox) highlightedBox.style.outline = '';
@@ -300,73 +429,16 @@
       function selectPerson(boxEl, personId){
         selectedPersonId = personId;
         if (highlightedBox) highlightedBox.style.outline = '';
-        boxEl.style.outline = '4px solid red';
+        boxEl.style.outline = '5px solid red';
         highlightedBox = boxEl;
-      }
-
-      function makeFrameMap(){
-        /*
-          Top:
-            p11-p19 = 9 square pronoun/person frames in 3 rows of 3
-            p20-p21 = 2 centered circular expression frames
-          Bottom:
-            p1-p10 = objects in 3-4-3, left alone from the last good version
-        */
-        const boxW3 = 29.4;
-        const boxW4 = 23.6;
-        const boxH = 9.2;
-
-        const circleSize = 17.8; // vw, used for both width and height to make true circles
-
-        const left3 = [4.0, 35.3, 66.6];
-        const left4 = [1.2, 25.4, 49.6, 73.8];
-        const circleLeft = [27.0, 55.2];
-
-        const tops = {
-          pRow1: 1.0,
-          pRow2: 10.6,
-          pRow3: 20.2,
-
-          expressionRow: 30.4,
-
-          // Visible gap after the expression circles.
-          oRow1: 45.0,
-          oRow2: 54.6,
-          oRow3: 64.2
-        };
-
-        const map = {};
-
-        [11, 12, 13].forEach((id, c) => map[id] = { top: tops.pRow1 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
-        [14, 15, 16].forEach((id, c) => map[id] = { top: tops.pRow2 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
-        [17, 18, 19].forEach((id, c) => map[id] = { top: tops.pRow3 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
-
-        [20, 21].forEach((id, c) => map[id] = { top: tops.expressionRow + 'vh', left: circleLeft[c] + 'vw', width: circleSize + 'vw', height: circleSize + 'vw', shape: 'circle' });
-
-        [1, 2, 3].forEach((id, c) => map[id] = { top: tops.oRow1 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
-        [4, 5, 6, 7].forEach((id, c) => map[id] = { top: tops.oRow2 + 'vh', left: left4[c] + 'vw', width: boxW4 + 'vw', height: boxH + 'vh', shape: 'square' });
-        [8, 9, 10].forEach((id, c) => map[id] = { top: tops.oRow3 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
-
-        return map;
       }
 
       function loadStructure(){
         structureArea.innerHTML = '';
         clearSelection();
 
-        const frameMap = makeFrameMap();
-
-        const allFrameIds = [
-          11,12,13,
-          14,15,16,
-          17,18,19,
-          20,21,
-          1,2,3,
-          4,5,6,7,
-          8,9,10
-        ];
-
-        allFrameIds.forEach(i => {
+        for(let i = 1; i <= 22; i++){
+          if (i === 13) continue;
           const d = document.createElement('div');
           d.className = 'box';
           d.id = `box${i}`;
@@ -376,59 +448,68 @@
           d.style.left = pos.left;
           d.style.width = pos.width;
           d.style.height = pos.height;
-          if (pos.shape === 'circle') d.classList.add('circle');
-
+console.log("Selected lesson =", selectedLesson);
           const img = document.createElement('img');
-          img.src = `../group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+         const url = `./group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
+console.log("IMAGE LOAD:", { selectedLesson, i, url });
+img.src = url;
           img.alt = `p${i}`;
           d.appendChild(img);
 
           d.addEventListener('click', () => {
-            if (i === 20 || i === 21) {
+            if (i === 21 || i === 22) {
               clearSelection();
-              audioBus.playOne(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
-            if (i >= 11 && i <= 19) {
+            if (i >= 11 && i <= 20) {
               selectPerson(d, i);
-              audioBus.playOne(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
             if (i >= 1 && i <= 10) {
               if (selectedPersonId) {
                 audioBus.playChain(
-                  `../group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
-                  `../group/lesson${selectedLesson}/sound/${i}.m4a`
+                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                  `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
               } else {
-                audioBus.playOne(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
+                audioBus.playOne(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
               }
+              return;
             }
           });
 
           structureArea.appendChild(d);
-        });
-
-        const urls = [];
-        for (let i = 1; i <= 21; i++) {
-          urls.push(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
         }
+
+           const urls = [];
+for (let i = 1; i <= 20; i++) {
+  if (i === 14) continue;
+  urls.push(`./group/lesson${selectedLesson}/sound/${i}.m4a`);
+}
+
         setTimeout(() => AudioJoiner.preload(urls), 200);
       }
 
-      function saveSelectedLesson(n){
-        selectedLesson = n;
-        sessionStorage.setItem('lesson', String(n));
-        sessionStorage.setItem('selectedLesson', String(n));
-        sessionStorage.setItem('currentLesson', String(n));
+      function showSelection(){
+        audioBus.stopAll();
+        structureArea.style.display = 'none';
+        lessonSelect.style.display = 'block';
+        pbar.style.display = 'none';
+        showLessonChip(false);
+        clearSelection();
       }
 
       function exitProgram(){
         audioBus.stopAll();
         try { window.close(); } catch(e) {}
-        try { location.href = '../index.html'; } catch(e) {}
+        try { location.href = exitUrl; } catch(e) {}
+        setTimeout(() => {
+          try { location.replace('about:blank'); } catch(e) {}
+        }, 200);
       }
 
       document.addEventListener('click', ev => {
@@ -438,14 +519,17 @@
         const action = btn.dataset.btn;
 
         if (action === 'continue') {
-          if (selectedLesson < 20) {
-            saveSelectedLesson(selectedLesson + 1);
-            audioBus.stopAll();
-            loadStructure();
-            updateLessonChip();
-            nudgeChip();
-          } else {
-            nudgeChip();
+          if (structureArea.style.display === 'block') {
+            if (selectedLesson < 20) {
+              selectedLesson++;
+              saveSelectedLesson(selectedLesson);
+              audioBus.stopAll();
+              loadStructure();
+              updateLessonChip();
+              nudgeChip();
+            } else {
+              nudgeChip();
+            }
           }
           return;
         }
@@ -456,16 +540,15 @@
         }
 
         if (action === 'choosel') {
-          audioBus.stopAll();
-          try { location.href = 'lessonselect.html'; } catch(e) {}
+          showSelection();
           return;
         }
 
         if (action === 'goback') {
           try {
-            window.open('../lagente.html', '_blank', 'noopener,noreferrer');
+            window.open('./lagente.html', '_blank', 'noopener,noreferrer');
           } catch(e) {
-            location.href = '../lagente.html';
+            location.href = './lagente.html';
           }
           return;
         }
@@ -493,7 +576,7 @@
         }
 
         if (action === 'translate') {
-          audioBus.playOne(`../group/translation/lesson${selectedLesson}.m4a`);
+          audioBus.playOne(`./group/translation/lesson${selectedLesson}.m4a`);
           return;
         }
 
@@ -507,9 +590,6 @@
           return;
         }
       }, false);
-
-      updateLessonChip();
-      loadStructure();
 
       window.addEventListener('pagehide', () => audioBus.stopAll());
       window.addEventListener('beforeunload', () => audioBus.stopAll());
