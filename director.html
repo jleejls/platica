@@ -33,11 +33,21 @@
       color:black;
     }
 
+    .box.circle{
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
     .box img{
       width:100%;
       height:100%;
       object-fit:contain;
       display:block;
+    }
+
+    .box.circle img{
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     .zipbutton{
@@ -294,62 +304,48 @@
         highlightedBox = boxEl;
       }
 
-      function fallbackLayoutRows(){
-        return [
-          { group: "pronouns", columns: 3, ids: [11, 12, 13] },
-          { group: "pronouns", columns: 3, ids: [14, 15, 16] },
-          { group: "pronouns", columns: 3, ids: [17, 18, 19] },
-          { group: "pronouns", columns: 3, ids: [20, 21, 22] },
-          { group: "gap", columns: 0, ids: [], height: "separator" },
-          { group: "objects", columns: 3, ids: [1, 2, 3] },
-          { group: "objects", columns: 4, ids: [4, 5, 6, 7] },
-          { group: "objects", columns: 3, ids: [8, 9, 10] }
-        ];
-      }
-
-      function getLayoutRows(){
-        try {
-          const rows = JSON.parse(sessionStorage.getItem("phoneLayoutRows") || "null");
-          if (Array.isArray(rows) && rows.length) return rows;
-        } catch(e) {}
-        return fallbackLayoutRows();
-      }
-
       function makeFrameMap(){
         /*
-          The upper 12 frame rows use the same simple three-column arrangement.
-          Then we intentionally leave visible separation space.
-          The object rows are explicitly 3-4-3, so all ten p1-p10 frames load.
+          Top:
+            p11-p19 = 9 square pronoun/person frames in 3 rows of 3
+            p20-p21 = 2 centered circular expression frames
+          Bottom:
+            p1-p10 = objects in 3-4-3, left alone from the last good version
         */
-        const boxW3 = 29.4;  // three-column rows
-        const boxW4 = 23.6;  // four-column row
+        const boxW3 = 29.4;
+        const boxW4 = 23.6;
         const boxH = 9.2;
+
+        const circleSize = 17.8; // vw, used for both width and height to make true circles
 
         const left3 = [4.0, 35.3, 66.6];
         const left4 = [1.2, 25.4, 49.6, 73.8];
+        const circleLeft = [27.0, 55.2];
 
         const tops = {
           pRow1: 1.0,
           pRow2: 10.6,
           pRow3: 20.2,
-          pRow4: 29.8,
 
-          // This creates the visual gap between upper 12 and lower 10.
-          oRow1: 44.8,
-          oRow2: 54.4,
-          oRow3: 64.0
+          expressionRow: 30.4,
+
+          // Visible gap after the expression circles.
+          oRow1: 45.0,
+          oRow2: 54.6,
+          oRow3: 64.2
         };
 
         const map = {};
 
-        [11, 12, 13].forEach((id, c) => map[id] = { top: tops.pRow1, left: left3[c], width: boxW3, height: boxH });
-        [14, 15, 16].forEach((id, c) => map[id] = { top: tops.pRow2, left: left3[c], width: boxW3, height: boxH });
-        [17, 18, 19].forEach((id, c) => map[id] = { top: tops.pRow3, left: left3[c], width: boxW3, height: boxH });
-        [20, 21, 22].forEach((id, c) => map[id] = { top: tops.pRow4, left: left3[c], width: boxW3, height: boxH });
+        [11, 12, 13].forEach((id, c) => map[id] = { top: tops.pRow1 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
+        [14, 15, 16].forEach((id, c) => map[id] = { top: tops.pRow2 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
+        [17, 18, 19].forEach((id, c) => map[id] = { top: tops.pRow3 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
 
-        [1, 2, 3].forEach((id, c) => map[id] = { top: tops.oRow1, left: left3[c], width: boxW3, height: boxH });
-        [4, 5, 6, 7].forEach((id, c) => map[id] = { top: tops.oRow2, left: left4[c], width: boxW4, height: boxH });
-        [8, 9, 10].forEach((id, c) => map[id] = { top: tops.oRow3, left: left3[c], width: boxW3, height: boxH });
+        [20, 21].forEach((id, c) => map[id] = { top: tops.expressionRow + 'vh', left: circleLeft[c] + 'vw', width: circleSize + 'vw', height: circleSize + 'vw', shape: 'circle' });
+
+        [1, 2, 3].forEach((id, c) => map[id] = { top: tops.oRow1 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
+        [4, 5, 6, 7].forEach((id, c) => map[id] = { top: tops.oRow2 + 'vh', left: left4[c] + 'vw', width: boxW4 + 'vw', height: boxH + 'vh', shape: 'square' });
+        [8, 9, 10].forEach((id, c) => map[id] = { top: tops.oRow3 + 'vh', left: left3[c] + 'vw', width: boxW3 + 'vw', height: boxH + 'vh', shape: 'square' });
 
         return map;
       }
@@ -360,12 +356,11 @@
 
         const frameMap = makeFrameMap();
 
-        // Build in the exact intended order, with all 22 frame ids.
         const allFrameIds = [
           11,12,13,
           14,15,16,
           17,18,19,
-          20,21,22,
+          20,21,
           1,2,3,
           4,5,6,7,
           8,9,10
@@ -377,10 +372,11 @@
           d.id = `box${i}`;
 
           const pos = frameMap[i];
-          d.style.top = pos.top + 'vh';
-          d.style.left = pos.left + 'vw';
-          d.style.width = pos.width + 'vw';
-          d.style.height = pos.height + 'vh';
+          d.style.top = pos.top;
+          d.style.left = pos.left;
+          d.style.width = pos.width;
+          d.style.height = pos.height;
+          if (pos.shape === 'circle') d.classList.add('circle');
 
           const img = document.createElement('img');
           img.src = `../group/lesson${selectedLesson}/image/p${i}.png?v=${Date.now()}`;
@@ -388,13 +384,13 @@
           d.appendChild(img);
 
           d.addEventListener('click', () => {
-            if (i === 21 || i === 22) {
+            if (i === 20 || i === 21) {
               clearSelection();
               audioBus.playOne(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
             }
 
-            if (i >= 11 && i <= 20) {
+            if (i >= 11 && i <= 19) {
               selectPerson(d, i);
               audioBus.playOne(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
               return;
@@ -416,7 +412,7 @@
         });
 
         const urls = [];
-        for (let i = 1; i <= 22; i++) {
+        for (let i = 1; i <= 21; i++) {
           urls.push(`../group/lesson${selectedLesson}/sound/${i}.m4a`);
         }
         setTimeout(() => AudioJoiner.preload(urls), 200);
@@ -461,7 +457,7 @@
 
         if (action === 'choosel') {
           audioBus.stopAll();
-          try { location.href = '../director.html'; } catch(e) {}
+          try { location.href = 'lessonselect.html'; } catch(e) {}
           return;
         }
 
