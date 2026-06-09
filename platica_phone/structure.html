@@ -92,8 +92,11 @@
     sessionStorage.setItem("tense", "now");
   }
 
-  // Correct phone path: same folder, phone lesson selector/director path.
-  window.location.replace("lessonselect.html");
+  // Tell the main non-modular director to use the phone layout from sessionStorage.
+  sessionStorage.setItem("phoneMode", "1");
+
+  // Return to the main director after this structure file has prepared the phone layout.
+  window.location.replace("../director.html?phoneRun=1");
 })();
 </script>
 </body>

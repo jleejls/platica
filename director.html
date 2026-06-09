@@ -190,7 +190,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
       const exitUrl         = 'about:blank';
-      let selectedLesson   = 1;
+      let selectedLesson   = readStoredLesson();
       let selectedPersonId = null;
       let highlightedBox   = null;
 
@@ -372,6 +372,145 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         }
       }
 
+      function readStoredLesson(){
+        const stored =
+          sessionStorage.getItem('selectedLesson') ||
+          sessionStorage.getItem('lesson') ||
+          sessionStorage.getItem('currentLesson') ||
+          '1';
+
+        const n = Number(stored);
+        return Number.isFinite(n) && n >= 1 && n <= 20 ? n : 1;
+      }
+
+      function phoneRunRequested(){
+        const params = new URLSearchParams(window.location.search);
+        return params.get('phoneRun') === '1' || sessionStorage.getItem('phoneMode') === '1';
+      }
+
+      function readJsonSession(key, fallback){
+        try {
+          const raw = sessionStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch(e) {
+          return fallback;
+        }
+      }
+
+      function attachSlotHandler(boxEl, id, kind){
+        boxEl.addEventListener('click', () => {
+          if (kind === 'expression') {
+            clearSelection();
+            audioBus.playOne(`./group/lesson${selectedLesson}/sound/${id}.m4a`);
+            return;
+          }
+
+          if (kind === 'main') {
+            selectPerson(boxEl, id);
+            audioBus.playOne(`./group/lesson${selectedLesson}/sound/${id}.m4a`);
+            return;
+          }
+
+          if (kind === 'object') {
+            if (selectedPersonId) {
+              audioBus.playChain(
+                `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                `./group/lesson${selectedLesson}/sound/${id}.m4a`
+              );
+            } else {
+              audioBus.playOne(`./group/lesson${selectedLesson}/sound/${id}.m4a`);
+            }
+          }
+        });
+      }
+
+      function loadPhoneStructureFromSession(){
+        structureArea.innerHTML = '';
+        clearSelection();
+
+        const rows = readJsonSession('phoneLayoutRows', null);
+        if (!Array.isArray(rows) || !rows.length) return false;
+
+        const expressionIds = new Set(readJsonSession('expressionPronounIds', [20, 21]));
+        const board = document.createElement('div');
+        board.id = 'phone-board';
+        board.style.position = 'absolute';
+        board.style.top = '0.5vh';
+        board.style.left = '0';
+        board.style.right = '0';
+        board.style.bottom = '10vh';
+        board.style.display = 'flex';
+        board.style.flexDirection = 'column';
+        board.style.alignItems = 'center';
+        board.style.justifyContent = 'flex-start';
+        board.style.gap = '2px';
+        board.style.overflow = 'hidden';
+        board.style.padding = '0 2px';
+
+        const usedSoundIds = new Set();
+
+        rows.forEach(row => {
+          if (!row || row.group === 'gap') {
+            const spacer = document.createElement('div');
+            spacer.style.height = '2.4vh';
+            spacer.style.flex = '0 0 2.4vh';
+            board.appendChild(spacer);
+            return;
+          }
+
+          const ids = Array.isArray(row.ids) ? row.ids : [];
+          const cols = Number(row.columns) || ids.length || 1;
+
+          const rowEl = document.createElement('div');
+          rowEl.style.display = 'flex';
+          rowEl.style.flexDirection = 'row';
+          rowEl.style.alignItems = 'center';
+          rowEl.style.justifyContent = 'center';
+          rowEl.style.gap = '2px';
+          rowEl.style.width = '100%';
+          rowEl.style.flex = '0 0 auto';
+
+          ids.forEach(id => {
+            const kind =
+              row.group === 'expressions' || expressionIds.has(id) ? 'expression' :
+              row.group === 'objects' ? 'object' : 'main';
+
+            const d = document.createElement('div');
+            d.className = 'box';
+            d.id = `box${id}`;
+            d.style.position = 'relative';
+            d.style.top = 'auto';
+            d.style.left = 'auto';
+            d.style.width = `min(calc((100vw - ${(cols + 1) * 2}px) / ${cols}), 11.4vh)`;
+            d.style.height = `min(calc((100vw - ${(cols + 1) * 2}px) / ${cols}), 11.4vh)`;
+            d.style.flex = '0 0 auto';
+            d.style.overflow = 'hidden';
+            d.style.borderRadius = kind === 'expression' ? '50%' : '0';
+
+            const img = document.createElement('img');
+            img.src = `./group/lesson${selectedLesson}/image/p${id}.png?v=${Date.now()}`;
+            img.alt = `p${id}`;
+            img.style.borderRadius = kind === 'expression' ? '50%' : '0';
+            d.appendChild(img);
+
+            attachSlotHandler(d, id, kind);
+            rowEl.appendChild(d);
+            usedSoundIds.add(id);
+          });
+
+          board.appendChild(rowEl);
+        });
+
+        structureArea.appendChild(board);
+
+        const urls = Array.from(usedSoundIds)
+          .sort((a, b) => a - b)
+          .map(id => `./group/lesson${selectedLesson}/sound/${id}.m4a`);
+
+        setTimeout(() => AudioJoiner.preload(urls), 200);
+        return true;
+      }
+
       for(let i = 1; i <= 20; i++){
         const btn = document.createElement('button');
         btn.textContent = `Lección ${i} — ${VERBS[i]}`;
@@ -393,6 +532,16 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           showLessonChip(true);
         });
         lessonButtonsEl.appendChild(btn);
+      }
+
+      if (phoneRunRequested()) {
+        selectedLesson = readStoredLesson();
+        lessonSelect.style.display = 'none';
+        structureArea.style.display = 'block';
+        pbar.style.display = 'flex';
+        loadStructure();
+        updateLessonChip();
+        showLessonChip(true);
       }
 
       const frameMap = {
@@ -434,6 +583,12 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       }
 
       function loadStructure(){
+        selectedLesson = readStoredLesson();
+
+        if (phoneRunRequested() && loadPhoneStructureFromSession()) {
+          return;
+        }
+
         structureArea.innerHTML = '';
         clearSelection();
 
