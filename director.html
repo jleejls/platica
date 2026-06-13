@@ -192,6 +192,53 @@
     }
 
 
+    #email-overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,.38);
+      z-index: 10000;
+      padding: 24px;
+    }
+
+    #email-overlay.show{
+      display: flex;
+    }
+
+    .email-card{
+      width: min(92vw, 560px);
+      background: #f5ead6;
+      color: #111;
+      border-radius: 18px;
+      border: 1px solid rgba(0,0,0,.16);
+      box-shadow: 0 8px 26px rgba(0,0,0,.24);
+      padding: 22px 20px;
+      text-align: center;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      line-height: 1.45;
+    }
+
+    .email-card strong{
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(1.08rem, 2.7vw, 1.38rem);
+    }
+
+    .email-close{
+      margin-top: 18px;
+      border: 1px solid #999;
+      border-radius: 10px;
+      background: #fff;
+      color: #111;
+      font-weight: 700;
+      padding: 9px 18px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+
     #lesson-chip{
       position: fixed;
       bottom: 17vh;
@@ -232,14 +279,14 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
     <div class="buttonz" data-btn="choosel" title="Ir a selección de lecciones">
       <img src="./trigger/choosel.png" alt="choosel">
     </div>
-    <div class="buttonz" data-btn="help" title="Ayuda">
-      <img src="./trigger/help.png" alt="Help">
+    <div class="buttonz" data-btn="help" title="Guidelines">
+      <img src="./trigger/help.png" alt="">
     </div>
     <div class="buttonz" data-btn="donate" title="Donar">
       <img src="./trigger/donate.png" alt="Donate">
     </div>
-    <div class="buttonz" data-btn="email" title="Correo (Gmail compose)">
-      <img src="./trigger/email.png" alt="email">
+    <div class="buttonz" data-btn="email" title="Email information">
+      <img src="./trigger/email.png" alt="">
     </div>
     <div class="buttonz" data-btn="goback" title="Volver">
       <img src="./trigger/goback.png" alt="Back">
@@ -250,6 +297,17 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
   </div>
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
+
+  <div id="email-overlay" role="dialog" aria-modal="true" aria-live="polite" aria-labelledby="email-overlay-message">
+    <div class="email-card">
+      <div id="email-overlay-message">
+        Please communicate with me by going to Gmail address:
+        <strong>spanishsoundbites.com</strong>
+      </div>
+      <button type="button" class="email-close" id="email-overlay-close">Close</button>
+    </div>
+  </div>
+
 
   <div id="loading-overlay" aria-live="polite" aria-atomic="true">
     <div class="loading-card">
@@ -286,10 +344,35 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
       const loadingOverlay  = document.getElementById('loading-overlay');
+      const emailOverlay    = document.getElementById('email-overlay');
+      const emailClose      = document.getElementById('email-overlay-close');
       const exitUrl         = 'about:blank';
       let selectedLesson   = readStoredLesson();
       let selectedPersonId = null;
       let highlightedBox   = null;
+
+
+      function showEmailOverlay(){
+        audioBus.stopAll();
+        emailOverlay.classList.add('show');
+        emailOverlay.style.display = 'flex';
+      }
+
+      function hideEmailOverlay(){
+        emailOverlay.classList.remove('show');
+        emailOverlay.style.display = 'none';
+      }
+
+      emailClose.addEventListener('click', hideEmailOverlay);
+      emailOverlay.addEventListener('click', ev => {
+        if (ev.target === emailOverlay) hideEmailOverlay();
+      });
+
+      document.addEventListener('keydown', ev => {
+        if (ev.key === 'Escape' && emailOverlay.classList.contains('show')) {
+          hideEmailOverlay();
+        }
+      });
 
       function showLessonChip(show){
         lessonChip.style.display = show ? 'block' : 'none';
@@ -854,24 +937,7 @@ for (let i = 1; i <= 20; i++) {
         }
 
         if (action === 'email') {
-          const gmailCompose = 'https://mail.google.com/mail/?view=cm&fs=1&to=spanishsoundbites@gmail.com&su=SSB%20Feedback';
-          let win = null;
-
-          try {
-            win = window.open(gmailCompose, '_blank', 'noopener,noreferrer');
-          } catch(e) {
-            win = null;
-          }
-
-          if (!win) {
-            const a = document.createElement('a');
-            a.href = 'mailto:spanishsoundbites@gmail.com?subject=SSB%20Feedback';
-            a.target = '_blank';
-            a.rel = 'noopener';
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-          }
+          showEmailOverlay();
           return;
         }
 
@@ -881,7 +947,8 @@ for (let i = 1; i <= 20; i++) {
         }
 
         if (action === 'help') {
-          alert('Botón de ayuda todavía no programado.');
+          audioBus.stopAll();
+          window.location.href = './guide/guidelines.html';
           return;
         }
 
