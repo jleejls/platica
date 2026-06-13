@@ -84,43 +84,63 @@
       display:block;
     }
 
-   .zipbutton{
-  display:none;
-  flex-direction:row;
-  align-items:center;
-  justify-content:center;
-  gap:0.4vh;
-  position:fixed;
-  bottom:2vh;
-  left:50%;
-  transform:translateX(-50%);
-  background-color:#f0f0f0;
-    padding:4px 4px;
-  border-radius:10px;
-  border:1px solid #ddd;
-  z-index:50;
-}
+    .zipbutton{
+      display:none;
+      flex-direction:row;
+      align-items:center;
+      justify-content:center;
+      gap:.4vh;
+      position:fixed;
+      bottom:2vh;
+      left:50%;
+      transform:translateX(-50%);
+      background-color:#f0f0f0;
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid #ddd;
+      z-index: 50;
+    }
 
-   .buttonz{
-  border:2px solid #4CAF50;
-  border-radius:1vw;
-  height:5vh;
-  width:10.5vw;
-  min-width:0;
-  min-height:34px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:14px;
-  background-color:#d05000;
-  cursor:pointer;
-}
+    .buttonz{
+      border:2px solid #4CAF50;
+      border-radius:1vw;
+      height:5vh;
+      width:5vw;
+      min-width:56px;
+      min-height:36px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      background-color:#d05000;
+      cursor: pointer;
+    }
 
     .buttonz img{
       max-width:100%;
       max-height:100%;
       display:block;
       pointer-events: none;
+    }
+
+
+    #loading-overlay{
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: #f0f8ff;
+      color: #111;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 700;
+      text-align: center;
+      z-index: 9999;
+      user-select: none;
+    }
+
+    #loading-overlay.show{
+      display: flex;
     }
 
     #lesson-chip{
@@ -182,6 +202,8 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
 
+  <div id="loading-overlay" aria-live="polite" aria-atomic="true">Your lesson is being prepared</div>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const lessonSelect    = document.getElementById('lesson-select');
@@ -189,6 +211,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
       const lessonButtonsEl = document.getElementById('lesson-buttons');
       const pbar            = document.getElementById('pbar');
       const lessonChip      = document.getElementById('lesson-chip');
+      const loadingOverlay  = document.getElementById('loading-overlay');
       const exitUrl         = 'about:blank';
       let selectedLesson   = readStoredLesson();
       let selectedPersonId = null;
@@ -200,6 +223,50 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 
       function updateLessonChip(){
         lessonChip.textContent = `Lección ${selectedLesson}`;
+      }
+
+
+      function showLoadingOverlay(){
+        loadingOverlay.classList.add('show');
+        loadingOverlay.style.display = 'flex';
+        return Date.now();
+      }
+
+      function wait(ms){
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function waitForStructureImages(){
+        const images = Array.from(structureArea.querySelectorAll('img'));
+        if (!images.length) return Promise.resolve();
+
+        return Promise.all(images.map(img => {
+          if (img.complete) return Promise.resolve();
+
+          return new Promise(resolve => {
+            img.addEventListener('load', resolve, { once: true });
+            img.addEventListener('error', resolve, { once: true });
+          });
+        }));
+      }
+
+      async function hideLoadingOverlayAfterReady(startTime){
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 2000 - elapsed);
+
+        await Promise.all([
+          waitForStructureImages(),
+          wait(remaining)
+        ]);
+
+        loadingOverlay.classList.remove('show');
+        loadingOverlay.style.display = 'none';
+      }
+
+      function loadStructureWithOverlay(){
+        const started = showLoadingOverlay();
+        loadStructure();
+        hideLoadingOverlayAfterReady(started);
       }
 
       function nudgeChip(){
@@ -412,9 +479,11 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           }
 
           if (kind === 'object') {
-            if (selectedPersonId) {
+            const personId = selectedPersonId;
+            if (personId) {
+              clearSelection();
               audioBus.playChain(
-                `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                `./group/lesson${selectedLesson}/sound/${personId}.m4a`,
                 `./group/lesson${selectedLesson}/sound/${id}.m4a`
               );
             } else {
@@ -527,7 +596,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
           lessonSelect.style.display = 'none';
           structureArea.style.display = 'block';
           pbar.style.display = 'flex';
-          loadStructure();
+          loadStructureWithOverlay();
           updateLessonChip();
           showLessonChip(true);
         });
@@ -539,7 +608,7 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
         lessonSelect.style.display = 'none';
         structureArea.style.display = 'block';
         pbar.style.display = 'flex';
-        loadStructure();
+        loadStructureWithOverlay();
         updateLessonChip();
         showLessonChip(true);
       }
@@ -625,9 +694,11 @@ img.src = url;
             }
 
             if (i >= 1 && i <= 10) {
-              if (selectedPersonId) {
+              const personId = selectedPersonId;
+              if (personId) {
+                clearSelection();
                 audioBus.playChain(
-                  `./group/lesson${selectedLesson}/sound/${selectedPersonId}.m4a`,
+                  `./group/lesson${selectedLesson}/sound/${personId}.m4a`,
                   `./group/lesson${selectedLesson}/sound/${i}.m4a`
                 );
               } else {
@@ -679,7 +750,7 @@ for (let i = 1; i <= 20; i++) {
               selectedLesson++;
               saveSelectedLesson(selectedLesson);
               audioBus.stopAll();
-              loadStructure();
+              loadStructureWithOverlay();
               updateLessonChip();
               nudgeChip();
             } else {
