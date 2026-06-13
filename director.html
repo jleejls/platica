@@ -123,25 +123,74 @@
       pointer-events: none;
     }
 
-
     #loading-overlay{
       position: fixed;
       inset: 0;
       display: none;
       align-items: center;
       justify-content: center;
-      background: #f0f8ff;
+      background: #f5ead6;
       color: #111;
-      font-size: clamp(1.2rem, 3vw, 2rem);
-      font-weight: 700;
       text-align: center;
       z-index: 9999;
       user-select: none;
+      padding: 24px;
     }
 
     #loading-overlay.show{
       display: flex;
     }
+
+    .loading-card{
+      max-width: 720px;
+      width: min(92vw, 720px);
+      max-height: 92vh;
+      overflow: auto;
+      padding: 18px 22px 22px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.35);
+      box-shadow: 0 6px 22px rgba(0,0,0,.10);
+    }
+
+    .loading-title{
+      margin: 0 0 12px;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: 800;
+    }
+
+    .loading-spinner{
+      width: 44px;
+      height: 44px;
+      margin: 6px auto 14px;
+      border: 5px solid rgba(0,0,0,.16);
+      border-top-color: rgba(0,0,0,.72);
+      border-radius: 50%;
+      animation: loading-spin .9s linear infinite;
+    }
+
+    .loading-credits{
+      text-align: left;
+      display: inline-block;
+      margin: 0 auto;
+      font-size: clamp(.92rem, 1.7vw, 1.08rem);
+      line-height: 1.32;
+    }
+
+    .loading-credits h3{
+      text-align: center;
+      margin: 8px 0 8px;
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    }
+
+    .loading-credits ul{
+      margin: 0;
+      padding-left: 1.2em;
+    }
+
+    @keyframes loading-spin{
+      to { transform: rotate(360deg); }
+    }
+
 
     #lesson-chip{
       position: fixed;
@@ -202,7 +251,32 @@ ADMINISTRATOR LESSON STRUCTURE LOADED
 
   <div id="lesson-chip" aria-live="polite" aria-atomic="true">Lección 1</div>
 
-  <div id="loading-overlay" aria-live="polite" aria-atomic="true">Your lesson is being prepared</div>
+  <div id="loading-overlay" aria-live="polite" aria-atomic="true">
+    <div class="loading-card">
+      <div class="loading-title">Your lesson is being prepared</div>
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <div class="loading-credits">
+<h3>Credits</h3>
+    <ul>
+      <li><strong>Project Creator:</strong> Jimmy Self</li>
+      <li><strong>Project Assistant:</strong> AJ Cornell</li>
+      <li><strong>Art & Design:</strong> José García</li>
+      <li><strong>Visuals:</strong> María Flores</li>
+      <li><strong>Male Voice:</strong> Jimmy Self</li>
+      <li><strong>Female Voice:</strong> Reina Maldonado</li>
+      <li><strong>Production Advisor:</strong> Prof. Eduardo De León</li>
+      <li><strong>Actors:</strong></li>
+      <li><strong></strong>-   Jose Garcia</li>
+      <li><strong></strong>-   Susana Mejia</li>
+      <li><strong></strong>-   Maria Flores</li>
+      <li><strong></strong>-   Lucia Garcia</li>
+      <li><strong></strong>-   Roberto Gomez</li>
+      <li><strong></strong>-   Noel Romero</li>
+      <li><strong></strong>-   AJ Cornell</li>
+    </ul>
+      </div>
+    </div>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
